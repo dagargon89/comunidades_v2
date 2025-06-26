@@ -57,6 +57,8 @@
 </head>
 
 <body class="bg-base min-h-screen flex flex-col">
+    <!-- Fondo Cadet gray -->
+    <?php include __DIR__ . '/nav.php'; ?>
     <!-- Mensajes flash -->
     <?php
     $flash = getFlashMessage();
