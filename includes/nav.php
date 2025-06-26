@@ -62,15 +62,39 @@
             <div class="flex items-center gap-4">
                 <?php if (isAuthenticated()): $user = getCurrentUser(); ?>
                     <div class="relative group">
-                        <button class="flex items-center gap-2 text-primary font-medium hover:text-secondary focus:outline-none">
-                            <i class="fas fa-user-circle text-lg"></i>
-                            <span class="hidden sm:inline-block"><?php echo htmlspecialchars($user['nombre'] . ' ' . $user['apellido_paterno']); ?></span>
+                        <button class="flex items-center gap-3 text-primary font-medium hover:text-secondary focus:outline-none p-2 rounded-lg hover:bg-base transition-colors">
+                            <div class="flex-shrink-0">
+                                <?php if ($user['foto_perfil']): ?>
+                                    <img src="/<?php echo htmlspecialchars($user['foto_perfil']); ?>"
+                                        alt="Foto de perfil"
+                                        class="w-8 h-8 rounded-full object-cover border-2 border-cadet/30">
+                                <?php else: ?>
+                                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-sm font-bold border-2 border-cadet/30">
+                                        <?php echo getInitials($user); ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="hidden sm:block text-left">
+                                <div class="text-sm font-medium"><?php echo htmlspecialchars($user['nombre'] . ' ' . $user['apellido_paterno']); ?></div>
+                                <div class="text-xs text-cadet"><?php echo htmlspecialchars($user['email']); ?></div>
+                            </div>
                             <i class="fas fa-chevron-down text-xs"></i>
                         </button>
-                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 z-50 hidden group-hover:block group-focus-within:block border border-cadet/20">
-                            <a href="/usuarios/perfil.php" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2"><i class="fas fa-user"></i> Mi Perfil</a>
+                        <div class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg py-2 z-50 hidden group-hover:block group-focus-within:block border border-cadet/20">
+                            <div class="px-4 py-2 border-b border-cadet/20">
+                                <div class="text-sm font-medium text-darkpurple"><?php echo htmlspecialchars(getFullName($user)); ?></div>
+                                <div class="text-xs text-cadet"><?php echo htmlspecialchars($user['email']); ?></div>
+                            </div>
+                            <a href="/usuarios/perfil.php" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2">
+                                <i class="fas fa-user"></i> Mi Perfil
+                            </a>
+                            <a href="/usuarios/update_perfil.php" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2">
+                                <i class="fas fa-edit"></i> Editar Perfil
+                            </a>
                             <hr class="my-1">
-                            <a href="/auth/logout.php" class="block px-4 py-2 text-sm text-error hover:bg-base rounded-md flex items-center gap-2"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                            <a href="/auth/logout.php" class="block px-4 py-2 text-sm text-error hover:bg-base rounded-md flex items-center gap-2">
+                                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                            </a>
                         </div>
                     </div>
                 <?php else: ?>

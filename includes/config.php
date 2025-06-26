@@ -58,6 +58,30 @@ function getCurrentUser()
     }
 }
 
+// Función para obtener los roles del usuario actual
+function getUserRoles($user_id = null)
+{
+    if (!$user_id && !isAuthenticated()) {
+        return [];
+    }
+
+    $user_id = $user_id ?: $_SESSION['user_id'];
+
+    try {
+        $pdo = getDBConnection();
+        $stmt = $pdo->prepare("
+            SELECT r.nombre 
+            FROM roles r 
+            JOIN usuario_roles ur ON r.id = ur.rol_id 
+            WHERE ur.usuario_id = ?
+        ");
+        $stmt->execute([$user_id]);
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    } catch (PDOException $e) {
+        return [];
+    }
+}
+
 // Función para verificar si el usuario tiene un rol específico
 function hasRole($roleName)
 {
@@ -79,6 +103,18 @@ function hasRole($roleName)
     } catch (PDOException $e) {
         return false;
     }
+}
+
+// Función para verificar si el usuario tiene alguno de los roles especificados
+function hasAnyRole($role_names)
+{
+    $roles = getUserRoles();
+    foreach ($role_names as $role) {
+        if (in_array($role, $roles)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 // Función para redirigir
@@ -105,4 +141,73 @@ function getFlashMessage()
         return $message;
     }
     return null;
+}
+
+// Funciones de utilidad adicionales
+function formatDate($date, $format = 'd/m/Y')
+{
+    if (!$date) return '-';
+    return date($format, strtotime($date));
+}
+
+function formatDateTime($datetime, $format = 'd/m/Y H:i')
+{
+    if (!$datetime) return '-';
+    return date($format, strtotime($datetime));
+}
+
+function getFullName($user)
+{
+    $name = $user['nombre'];
+    if (!empty($user['apellido_paterno'])) {
+        $name .= ' ' . $user['apellido_paterno'];
+    }
+    if (!empty($user['apellido_materno'])) {
+        $name .= ' ' . $user['apellido_materno'];
+    }
+    return $name;
+}
+
+function getInitials($user)
+{
+    $initials = '';
+    if (!empty($user['nombre'])) {
+        $initials .= strtoupper(substr($user['nombre'], 0, 1));
+    }
+    if (!empty($user['apellido_paterno'])) {
+        $initials .= strtoupper(substr($user['apellido_paterno'], 0, 1));
+    }
+    return $initials;
+}
+
+function isValidEmail($email)
+{
+    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+}
+
+function sanitizeText($text)
+{
+    return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+}
+
+function truncateText($text, $length = 100, $suffix = '...')
+{
+    if (strlen($text) <= $length) {
+        return $text;
+    }
+    return substr($text, 0, $length) . $suffix;
+}
+
+function isValidImage($file)
+{
+    $allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+    return in_array($file['type'], $allowed_types);
+}
+
+function generateUniqueFileName($original_name, $prefix = '')
+{
+    $extension = pathinfo($original_name, PATHINFO_EXTENSION);
+    $timestamp = time();
+    $random = bin2hex(random_bytes(8));
+    return $prefix . $timestamp . '_' . $random . '.' . $extension;
 }
