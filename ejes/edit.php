@@ -1,0 +1,42 @@
+<?php
+$page_title = "Editar Eje Estratégico";
+require_once '../includes/header.php';
+if (!isAuthenticated()) redirect('/auth/login.php');
+$id = intval($_GET['id'] ?? 0);
+if ($id <= 0) redirect('index.php');
+try {
+    $pdo = getDBConnection();
+    $stmt = $pdo->prepare("SELECT * FROM ejes WHERE id = ?");
+    $stmt->execute([$id]);
+    $eje = $stmt->fetch();
+    if (!$eje) redirect('index.php');
+} catch (PDOException $e) {
+    setFlashMessage('error', 'Error al cargar el eje.');
+    redirect('index.php');
+}
+?>
+<div class="flex flex-col items-center justify-center min-h-[70vh]">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 border border-cadet/40 w-full max-w-lg mx-auto">
+        <h1 class="text-2xl font-bold text-primary flex items-center gap-2 mb-6">
+            <i class="fas fa-sitemap text-accent"></i> Editar Eje Estratégico
+        </h1>
+        <form action="update.php" method="POST" class="space-y-6">
+            <input type="hidden" name="id" value="<?php echo $eje['id']; ?>">
+            <div>
+                <label for="nombre" class="block text-sm font-semibold text-darkpurple mb-1">Nombre *</label>
+                <input type="text" id="nombre" name="nombre" required maxlength="255" value="<?php echo htmlspecialchars($eje['nombre']); ?>" class="w-full px-4 py-2 border border-cadet/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white placeholder-cadet text-darkpurple shadow-sm" placeholder="Nombre del eje estratégico">
+            </div>
+            <div>
+                <label for="descripcion" class="block text-sm font-semibold text-darkpurple mb-1">Descripción</label>
+                <textarea id="descripcion" name="descripcion" rows="4" maxlength="1000" class="w-full px-4 py-2 border border-cadet/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white placeholder-cadet text-darkpurple shadow-sm resize-none" placeholder="Descripción del eje estratégico"><?php echo htmlspecialchars($eje['descripcion']); ?></textarea>
+            </div>
+            <div class="flex items-center justify-between mt-4">
+                <a href="index.php" class="text-sm text-cadet hover:text-primary flex items-center gap-1"><i class="fas fa-arrow-left"></i> Volver al listado</a>
+                <button type="submit" class="bg-primary text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 shadow hover:bg-secondary focus:ring-2 focus:ring-accent focus:outline-none flex items-center gap-2">
+                    <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<?php require_once '../includes/footer.php'; ?>

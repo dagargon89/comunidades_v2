@@ -8,11 +8,41 @@
                 <a href="/" class="text-primary font-bold text-lg flex items-center gap-2 hover:text-secondary transition-colors">
                     <i class="fas fa-home"></i> Dashboard
                 </a>
-                <a href="/actividades/" class="text-primary hover:text-secondary px-2 py-1 rounded-md text-sm font-medium">Actividades</a>
-                <a href="/beneficiarios/" class="text-primary hover:text-secondary px-2 py-1 rounded-md text-sm font-medium">Beneficiarios</a>
-                <a href="/organizaciones/" class="text-primary hover:text-secondary px-2 py-1 rounded-md text-sm font-medium">Organizaciones</a>
-                <a href="/gantt.php" class="text-primary hover:text-secondary px-2 py-1 rounded-md text-sm font-medium">Gantt</a>
-                <!-- Menú desplegable de catálogos -->
+
+                <!-- Menú desplegable de Planificación Estratégica -->
+                <div class="relative group">
+                    <button class="text-primary hover:text-secondary px-2 py-1 rounded-md text-sm font-medium flex items-center gap-1 focus:outline-none">
+                        <i class="fas fa-sitemap"></i> Planificación
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div class="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-lg py-2 z-50 hidden group-hover:block group-focus-within:block border border-cadet/20">
+                        <div class="px-4 py-2 text-xs text-cadet uppercase tracking-wider font-semibold">Jerarquía Estratégica</div>
+                        <a href="/ejes/" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2"><i class="fas fa-sitemap"></i> Ejes Estratégicos</a>
+                        <a href="/componentes/" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2"><i class="fas fa-cubes"></i> Componentes</a>
+                        <a href="/productos/" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2"><i class="fas fa-box"></i> Productos</a>
+                        <hr class="my-1">
+                        <div class="px-4 py-2 text-xs text-cadet uppercase tracking-wider font-semibold">Operativo</div>
+                        <a href="/actividades/" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2"><i class="fas fa-tasks"></i> Actividades</a>
+                    </div>
+                </div>
+
+                <!-- Menú desplegable de Gestión -->
+                <div class="relative group">
+                    <button class="text-primary hover:text-secondary px-2 py-1 rounded-md text-sm font-medium flex items-center gap-1 focus:outline-none">
+                        <i class="fas fa-users"></i> Gestión
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div class="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-lg py-2 z-50 hidden group-hover:block group-focus-within:block border border-cadet/20">
+                        <div class="px-4 py-2 text-xs text-cadet uppercase tracking-wider font-semibold">Participantes</div>
+                        <a href="/beneficiarios/" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2"><i class="fas fa-user-friends"></i> Beneficiarios</a>
+                        <a href="/organizaciones/" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2"><i class="fas fa-building"></i> Organizaciones</a>
+                        <hr class="my-1">
+                        <div class="px-4 py-2 text-xs text-cadet uppercase tracking-wider font-semibold">Herramientas</div>
+                        <a href="/gantt.php" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2"><i class="fas fa-chart-gantt"></i> Diagrama Gantt</a>
+                    </div>
+                </div>
+
+                <!-- Menú desplegable de Administración -->
                 <div class="relative group">
                     <button class="text-primary hover:text-secondary px-2 py-1 rounded-md text-sm font-medium flex items-center gap-1 focus:outline-none">
                         <i class="fas fa-cogs"></i> Administración
@@ -27,6 +57,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Menú de usuario alineado a la derecha -->
             <div class="flex items-center gap-4">
                 <?php if (isAuthenticated()): $user = getCurrentUser(); ?>
