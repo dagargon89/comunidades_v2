@@ -54,33 +54,6 @@
             }
         }
     </script>
-
-    <!-- Estilos personalizados -->
-    <style>
-        .btn-primary {
-            @apply bg-primary text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 shadow hover:bg-secondary focus:ring-2 focus:ring-accent focus:outline-none;
-        }
-
-        .btn-secondary {
-            @apply bg-secondary text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 shadow hover:bg-primary focus:ring-2 focus:ring-accent focus:outline-none;
-        }
-
-        .btn-accent {
-            @apply bg-accent text-darkpurple font-medium py-2 px-4 rounded-lg transition-colors duration-200 shadow hover:bg-xanthous/80 focus:ring-2 focus:ring-primary focus:outline-none;
-        }
-
-        .form-input {
-            @apply w-full px-4 py-2 border border-cadet/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white placeholder-cadet text-darkpurple shadow-sm;
-        }
-
-        .form-label {
-            @apply block text-sm font-semibold text-darkpurple mb-1;
-        }
-
-        .card {
-            @apply bg-white rounded-2xl shadow-2xl p-8 border border-cadet/40;
-        }
-    </style>
 </head>
 
 <body class="bg-base min-h-screen flex flex-col">
@@ -144,7 +117,7 @@
                 <?php else: ?>
                     <div class="flex items-center space-x-4">
                         <a href="/auth/login.php" class="text-primary hover:text-secondary px-3 py-2 rounded-md text-sm font-medium">Iniciar Sesión</a>
-                        <a href="/auth/registro.php" class="btn-primary text-sm">Registrarse</a>
+                        <a href="/auth/registro.php" class="bg-primary text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 shadow hover:bg-secondary focus:ring-2 focus:ring-accent focus:outline-none text-sm">Registrarse</a>
                     </div>
                 <?php endif; ?>
             </div>
