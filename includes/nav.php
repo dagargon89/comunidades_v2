@@ -27,7 +27,26 @@
                     </div>
                 </div>
             </div>
-            <!-- Aquí puedes agregar el menú de usuario si lo deseas -->
+            <!-- Menú de usuario alineado a la derecha -->
+            <div class="flex items-center gap-4">
+                <?php if (isAuthenticated()): $user = getCurrentUser(); ?>
+                    <div class="relative group">
+                        <button class="flex items-center gap-2 text-primary font-medium hover:text-secondary focus:outline-none">
+                            <i class="fas fa-user-circle text-lg"></i>
+                            <span class="hidden sm:inline-block"><?php echo htmlspecialchars($user['nombre'] . ' ' . $user['apellido_paterno']); ?></span>
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 z-50 hidden group-hover:block group-focus-within:block border border-cadet/20">
+                            <a href="/usuarios/perfil.php" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2"><i class="fas fa-user"></i> Mi Perfil</a>
+                            <hr class="my-1">
+                            <a href="/auth/logout.php" class="block px-4 py-2 text-sm text-error hover:bg-base rounded-md flex items-center gap-2"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <a href="/auth/login.php" class="text-primary hover:text-secondary px-3 py-2 rounded-md text-sm font-medium">Iniciar Sesión</a>
+                    <a href="/auth/registro.php" class="bg-primary text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 shadow hover:bg-secondary focus:ring-2 focus:ring-accent focus:outline-none text-sm">Registrarse</a>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
 </nav>

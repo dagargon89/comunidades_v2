@@ -71,61 +71,6 @@
         </div>
     <?php endif; ?>
 
-    <!-- Header principal -->
-    <header class="bg-white shadow-sm border-b border-cadet/20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo y título -->
-                <div class="flex items-center">
-                    <a href="/" class="flex items-center space-x-3">
-                        <i class="fas fa-users text-primary text-2xl"></i>
-                        <span class="text-xl font-bold text-primary tracking-wide"><?php echo APP_NAME; ?></span>
-                    </a>
-                </div>
-
-                <!-- Navegación -->
-                <?php if (isAuthenticated()): ?>
-                    <nav class="hidden md:flex space-x-8">
-                        <a href="/actividades/" class="text-primary hover:text-secondary px-3 py-2 rounded-md text-sm font-medium">Actividades</a>
-                        <a href="/beneficiarios/" class="text-primary hover:text-secondary px-3 py-2 rounded-md text-sm font-medium">Beneficiarios</a>
-                        <a href="/organizaciones/" class="text-primary hover:text-secondary px-3 py-2 rounded-md text-sm font-medium">Organizaciones</a>
-                        <a href="/gantt.php" class="text-primary hover:text-secondary px-3 py-2 rounded-md text-sm font-medium">Gantt</a>
-                    </nav>
-
-                    <!-- Menú de usuario -->
-                    <div class="flex items-center space-x-4">
-                        <div class="relative">
-                            <button class="flex items-center space-x-2 text-primary hover:text-secondary">
-                                <i class="fas fa-user-circle text-xl"></i>
-                                <span class="text-sm font-medium">
-                                    <?php
-                                    $user = getCurrentUser();
-                                    echo htmlspecialchars($user['nombre'] . ' ' . $user['apellido_paterno']);
-                                    ?>
-                                </span>
-                                <i class="fas fa-chevron-down text-xs"></i>
-                            </button>
-                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden">
-                                <a href="/usuarios/perfil.php" class="block px-4 py-2 text-sm text-primary hover:bg-base">
-                                    <i class="fas fa-user mr-2"></i>Mi Perfil
-                                </a>
-                                <hr class="my-1">
-                                <a href="/auth/logout.php" class="block px-4 py-2 text-sm text-error hover:bg-base">
-                                    <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                <?php else: ?>
-                    <div class="flex items-center space-x-4">
-                        <a href="/auth/login.php" class="text-primary hover:text-secondary px-3 py-2 rounded-md text-sm font-medium">Iniciar Sesión</a>
-                        <a href="/auth/registro.php" class="bg-primary text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 shadow hover:bg-secondary focus:ring-2 focus:ring-accent focus:outline-none text-sm">Registrarse</a>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </div>
-    </header>
-
     <!-- Contenido principal -->
     <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col justify-center">
 </body>
