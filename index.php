@@ -90,41 +90,6 @@ try {
         </div>
     </div>
 
-    <!-- Acciones rápidas -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <a href="/actividades/create.php" class="bg-white rounded-2xl shadow-2xl p-6 border border-cadet/40 hover:shadow-xl transition-shadow duration-200 flex flex-col items-center text-center group">
-            <div class="w-12 h-12 bg-xanthous/30 rounded-full flex items-center justify-center mb-3">
-                <i class="fas fa-plus text-xanthous text-xl"></i>
-            </div>
-            <h3 class="font-semibold text-darkpurple">Nueva Actividad</h3>
-            <p class="text-sm text-cadet mt-1">Crear una nueva actividad</p>
-        </a>
-
-        <a href="/beneficiarios/create.php" class="bg-white rounded-2xl shadow-2xl p-6 border border-cadet/40 hover:shadow-xl transition-shadow duration-200 flex flex-col items-center text-center group">
-            <div class="w-12 h-12 bg-seagreen/30 rounded-full flex items-center justify-center mb-3">
-                <i class="fas fa-user-plus text-seagreen text-xl"></i>
-            </div>
-            <h3 class="font-semibold text-darkpurple">Nuevo Beneficiario</h3>
-            <p class="text-sm text-cadet mt-1">Registrar un beneficiario</p>
-        </a>
-
-        <a href="/organizaciones/create.php" class="bg-white rounded-2xl shadow-2xl p-6 border border-cadet/40 hover:shadow-xl transition-shadow duration-200 flex flex-col items-center text-center group">
-            <div class="w-12 h-12 bg-primary/30 rounded-full flex items-center justify-center mb-3">
-                <i class="fas fa-building text-primary text-xl"></i>
-            </div>
-            <h3 class="font-semibold text-darkpurple">Nueva Organización</h3>
-            <p class="text-sm text-cadet mt-1">Agregar organización</p>
-        </a>
-
-        <a href="/gantt.php" class="bg-white rounded-2xl shadow-2xl p-6 border border-cadet/40 hover:shadow-xl transition-shadow duration-200 flex flex-col items-center text-center group">
-            <div class="w-12 h-12 bg-bittersweet/30 rounded-full flex items-center justify-center mb-3">
-                <i class="fas fa-chart-bar text-bittersweet text-xl"></i>
-            </div>
-            <h3 class="font-semibold text-darkpurple">Vista Gantt</h3>
-            <p class="text-sm text-cadet mt-1">Ver cronograma</p>
-        </a>
-    </div>
-
     <!-- Actividades recientes -->
     <div class="bg-white rounded-2xl shadow-2xl p-8 border border-cadet/40">
         <div class="flex items-center justify-between mb-4">
