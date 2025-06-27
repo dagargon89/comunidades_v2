@@ -566,7 +566,7 @@ try {
     </div>
 
     <!-- Modal para detalles de actividad -->
-    <div id="modal-actividad" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50">
+    <div id="modal-detalle-gantt" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50">
         <div class="flex justify-center items-center p-4 min-h-screen">
             <div class="bg-white rounded-xl shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                 <div class="p-6">
@@ -616,23 +616,31 @@ try {
         gantt.config.work_time = true;
         gantt.config.correct_work_time = true;
 
-        // --- COLUMNAS PERSONALIZADAS DEL GANTT ---
+        // Restaurar columnas originales del Gantt
         gantt.config.columns = [{
                 name: "text",
                 label: "Actividad",
-                width: 250,
+                width: 200,
                 tree: true,
-                template: function(obj) {
-                    // Flecha acordeón
-                    const isOpen = (window.filaExpandidaId && window.filaExpandidaId == obj.id);
-                    const flecha = isOpen ? '▼' : '▶';
-                    return `<span class='gantt-acordeon-flecha' data-id='${obj.id}' style='cursor:pointer; margin-right:8px;'>${flecha}</span>${obj.text}`;
+                editor: {
+                    type: "text",
+                    map_to: "text"
+                }
+            },
+            {
+                name: "responsable",
+                label: "Responsable",
+                width: 120,
+                editor: {
+                    type: "select",
+                    map_to: "responsable",
+                    options: []
                 }
             },
             {
                 name: "estado",
                 label: "Estado",
-                width: 120,
+                width: 100,
                 template: function(obj) {
                     const estados = {
                         'Programada': '<span class="px-2 py-1 text-xs text-blue-800 bg-blue-100 rounded-full">Programada</span>',
@@ -641,71 +649,57 @@ try {
                         'Cancelada': '<span class="px-2 py-1 text-xs text-red-800 bg-red-100 rounded-full">Cancelada</span>'
                     };
                     return estados[obj.estado] || obj.estado;
+                },
+                editor: {
+                    type: "select",
+                    map_to: "estado",
+                    options: [{
+                            key: "Programada",
+                            label: "Programada"
+                        },
+                        {
+                            key: "En Progreso",
+                            label: "En Progreso"
+                        },
+                        {
+                            key: "Completada",
+                            label: "Completada"
+                        },
+                        {
+                            key: "Cancelada",
+                            label: "Cancelada"
+                        }
+                    ]
+                }
+            },
+            {
+                name: "lugar",
+                label: "Lugar",
+                width: 150,
+                editor: {
+                    type: "text",
+                    map_to: "lugar"
+                }
+            },
+            {
+                name: "tipo",
+                label: "Tipo",
+                width: 100,
+                editor: {
+                    type: "text",
+                    map_to: "tipo"
                 }
             }
         ];
-
-        // --- ACORDEÓN DETALLES ---
-        window.filaExpandidaId = null;
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('gantt-acordeon-flecha')) {
-                const id = e.target.getAttribute('data-id');
-                toggleAcordeonGantt(id);
-            }
-        });
-        // También permitir clic en el nombre de la actividad
+        // Restaurar eventos para mostrar el modal de detalles
         gantt.attachEvent("onTaskClick", function(id, e) {
-            if (e.target.classList.contains('gantt-acordeon-flecha')) return false;
-            toggleAcordeonGantt(id);
+            mostrarDetallesActividad(id);
             return false;
         });
-
-        function toggleAcordeonGantt(id) {
-            // Cerrar fila anterior si existe y es diferente
-            if (window.filaExpandidaId && window.filaExpandidaId !== id) {
-                const rowAnterior = document.querySelector(`.gantt_row[data-task-id='${window.filaExpandidaId}'] + .gantt_detalle_row`);
-                if (rowAnterior) rowAnterior.remove();
-                window.filaExpandidaId = null;
-                // Restaurar flecha
-                const flechaAnt = document.querySelector(`.gantt-acordeon-flecha[data-id='${window.filaExpandidaId}']`);
-                if (flechaAnt) flechaAnt.textContent = '▶';
-            }
-            // Si ya está expandida, la cerramos
-            const rowExistente = document.querySelector(`.gantt_row[data-task-id='${id}'] + .gantt_detalle_row`);
-            if (rowExistente) {
-                rowExistente.remove();
-                window.filaExpandidaId = null;
-                // Cambiar flecha
-                const flecha = document.querySelector(`.gantt-acordeon-flecha[data-id='${id}']`);
-                if (flecha) flecha.textContent = '▶';
-                return;
-            }
-            // Obtenemos datos de la actividad
-            const task = gantt.getTask(id);
-            const actividad = actividadesData.find(a => a.id == id);
-            // Creamos la fila de detalles
-            const row = document.querySelector(`.gantt_row[data-task-id='${id}']`);
-            if (row) {
-                const detalleRow = document.createElement('div');
-                detalleRow.className = 'gantt_detalle_row';
-                detalleRow.style.background = '#f8f9fa';
-                detalleRow.style.borderLeft = '4px solid #20A39E';
-                detalleRow.style.padding = '16px';
-                detalleRow.style.gridColumn = '1/-1';
-                detalleRow.innerHTML = `
-                    <div style="display: flex; flex-wrap: wrap; gap: 24px;">
-                        <div><b>Responsable:</b> ${actividad.responsable_nombre ? actividad.responsable_nombre + ' ' + actividad.responsable_apellido : 'No asignado'}</div>
-                        <div><b>Lugar:</b> ${actividad.lugar || 'No especificado'}</div>
-                        <div><b>Tipo:</b> ${actividad.tipo_actividad || 'No especificado'}</div>
-                    </div>
-                `;
-                row.parentNode.insertBefore(detalleRow, row.nextSibling);
-                window.filaExpandidaId = id;
-                // Cambiar flecha
-                const flecha = document.querySelector(`.gantt-acordeon-flecha[data-id='${id}']`);
-                if (flecha) flecha.textContent = '▼';
-            }
-        }
+        gantt.attachEvent("onTaskDblClick", function(id, e) {
+            mostrarDetallesActividad(id);
+            return false;
+        });
 
         // Configuración de enlaces
         gantt.config.links = {
@@ -762,20 +756,6 @@ try {
         gantt.templates.progress_text = function(start, end, task) {
             return Math.round(task.progress || 0) + "%";
         };
-
-        // Eventos del Gantt
-        gantt.attachEvent("onTaskClick", function(id, e) {
-            if (e.target.classList.contains('gantt_cell')) {
-                return true; // Permitir edición inline
-            }
-            mostrarDetallesActividad(id);
-            return false;
-        });
-
-        gantt.attachEvent("onTaskDblClick", function(id, e) {
-            mostrarDetallesActividad(id);
-            return false;
-        });
 
         // Evento de cambio de tarea
         gantt.attachEvent("onAfterTaskUpdate", function(id, task) {
@@ -939,7 +919,7 @@ try {
             `;
 
             document.getElementById('modal-content').innerHTML = modalContent;
-            document.getElementById('modal-actividad').classList.remove('hidden');
+            document.getElementById('modal-detalle-gantt').classList.remove('hidden');
         }
 
         // Función para editar actividad
@@ -954,7 +934,7 @@ try {
 
         // Función para cerrar modal
         function cerrarModal() {
-            document.getElementById('modal-actividad').classList.add('hidden');
+            document.getElementById('modal-detalle-gantt').classList.add('hidden');
         }
 
         // --- FILTRO PERSONALIZADO DE ACTIVIDADES ---
