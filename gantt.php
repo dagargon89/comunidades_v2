@@ -1048,6 +1048,80 @@ try {
             document.body.removeChild(link);
         }
         
+        // Función para exportar PDF
+        function exportarPDF() {
+            try {
+                const tareas = gantt.getTaskByTime();
+                let contenidoHTML = `
+                    <html>
+                    <head>
+                        <title>Reporte de Actividades - Diagrama de Gantt</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; margin: 20px; }
+                            h1 { color: #23001E; text-align: center; }
+                            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                            th { background-color: #f8f9fa; font-weight: bold; }
+                            .estado-completada { background-color: #d4edda; }
+                            .estado-progreso { background-color: #fff3cd; }
+                            .estado-programada { background-color: #d1ecf1; }
+                            .estado-cancelada { background-color: #f8d7da; }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>Reporte de Actividades - Diagrama de Gantt</h1>
+                        <p><strong>Fecha de generación:</strong> ${new Date().toLocaleDateString('es-ES')}</p>
+                        <p><strong>Total de actividades:</strong> ${tareas.length}</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Actividad</th>
+                                    <th>Responsable</th>
+                                    <th>Estado</th>
+                                    <th>Lugar</th>
+                                    <th>Fecha Inicio</th>
+                                    <th>Fecha Fin</th>
+                                    <th>Progreso</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                tareas.forEach(function(task) {
+                    const estadoClass = task.estado === 'Completada' ? 'estado-completada' : 
+                                      task.estado === 'En Progreso' ? 'estado-progreso' :
+                                      task.estado === 'Programada' ? 'estado-programada' : 'estado-cancelada';
+                    contenidoHTML += `
+                        <tr class="${estadoClass}">
+                            <td>${task.text}</td>
+                            <td>${task.responsable}</td>
+                            <td>${task.estado}</td>
+                            <td>${task.lugar || 'No especificado'}</td>
+                            <td>${gantt.templates.tooltip_date_format(task.start_date)}</td>
+                            <td>${gantt.templates.tooltip_date_format(task.end_date)}</td>
+                            <td>${Math.round(task.progress || 0)}%</td>
+                        </tr>
+                    `;
+                });
+                contenidoHTML += `
+                            </tbody>
+                        </table>
+                    </body>
+                    </html>
+                `;
+                const ventanaImpresion = window.open('', '_blank');
+                ventanaImpresion.document.write(contenidoHTML);
+                ventanaImpresion.document.close();
+                ventanaImpresion.onload = function() {
+                    ventanaImpresion.print();
+                    ventanaImpresion.close();
+                };
+                mostrarNotificacion('Generando PDF...', 'success');
+            } catch (error) {
+                console.error('Error al exportar PDF:', error);
+                mostrarNotificacion('Error al generar PDF', 'error');
+            }
+        }
+        
         // Funciones de zoom
         function zoomIn() {
             gantt.ext.zoom.zoomIn();
