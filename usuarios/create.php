@@ -40,7 +40,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Insertar usuario
     $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, apellido_paterno, apellido_materno, email, password, telefono, puesto, organizacion_id, activo, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())");
     $stmt->execute([
-        $nombre, $apellido_paterno, $apellido_materno, $email, password_hash($password, PASSWORD_DEFAULT), $telefono, $puesto, $organizacion_id ?: null
+        $nombre,
+        $apellido_paterno,
+        $apellido_materno,
+        $email,
+        password_hash($password, PASSWORD_DEFAULT),
+        $telefono,
+        $puesto,
+        $organizacion_id ?: null
     ]);
     $user_id = $pdo->lastInsertId();
     // Asignar roles
@@ -54,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 require_once '../includes/header.php';
 ?>
 <div class="flex flex-col items-center justify-center min-h-[70vh] py-8">
-    <div class="bg-white rounded-2xl shadow-2xl p-8 border border-cadet/40 w-full max-w-2xl mx-auto">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 border border-cadet/40 w-full w-[90vw] mx-auto">
         <h1 class="text-2xl font-bold text-primary flex items-center gap-2 mb-6">
             <i class="fas fa-user-plus text-accent"></i> Nuevo Usuario
         </h1>
@@ -116,4 +123,4 @@ require_once '../includes/header.php';
         </form>
     </div>
 </div>
-<?php require_once '../includes/footer.php'; ?> 
+<?php require_once '../includes/footer.php'; ?>

@@ -4,7 +4,7 @@ require_once '../includes/header.php';
 if (!isAuthenticated()) redirect('/auth/login.php');
 ?>
 <div class="flex flex-col items-center justify-center min-h-[70vh]">
-    <div class="bg-white rounded-2xl shadow-2xl p-8 border border-cadet/40 w-full max-w-lg mx-auto">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 border border-cadet/40 w-full w-[90vw] mx-auto">
         <h1 class="text-2xl font-bold text-primary flex items-center gap-2 mb-6">
             <i class="fas fa-sitemap text-accent"></i> Nuevo Eje Estratégico
         </h1>

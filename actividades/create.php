@@ -43,7 +43,7 @@ try {
 }
 ?>
 <div class="flex flex-col items-center justify-center min-h-[70vh]">
-    <div class="bg-white rounded-2xl shadow-2xl p-8 border border-cadet/40 w-full max-w-4xl mx-auto">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 border border-cadet/40 w-full w-[90vw] mx-auto">
         <h1 class="text-2xl font-bold text-primary flex items-center gap-2 mb-6">
             <i class="fas fa-tasks text-accent"></i> Nueva Actividad
         </h1>
