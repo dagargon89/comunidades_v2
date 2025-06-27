@@ -571,10 +571,9 @@ try {
         
         // Configuración del Gantt
         gantt.config.date_format = "%Y-%m-%d %H:%i";
-        gantt.config.scale_unit = "month";
-        gantt.config.date_scale = "%F, %Y";
-        gantt.config.subscales = [
-            {unit: "week", step: 1, date: "%j"}
+        gantt.config.scales = [
+            {unit: "month", step: 1, format: "%F, %Y"},
+            {unit: "week", step: 1, format: "%j"}
         ];
         
         // Configuración avanzada
