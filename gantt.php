@@ -4,7 +4,7 @@ if (!isAuthenticated()) redirect('/auth/login.php');
 
 try {
     $pdo = getDBConnection();
-    
+
     // Obtener actividades con información completa
     $sql = "SELECT 
                 a.id,
@@ -39,11 +39,11 @@ try {
             LEFT JOIN usuarios u ON a.responsable_id = u.id
             LEFT JOIN organizaciones org ON u.organizacion_id = org.id
             ORDER BY a.fecha_inicio ASC, e.nombre, c.nombre, p.nombre";
-    
+
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
     $actividades = $stmt->fetchAll();
-    
+
     // Obtener estadísticas
     $sql_stats = "SELECT 
                     COUNT(*) as total_actividades,
@@ -55,9 +55,8 @@ try {
     $stmt_stats = $pdo->prepare($sql_stats);
     $stmt_stats->execute();
     $stats = $stmt_stats->fetch();
-    
+
     $user = getCurrentUser();
-    
 } catch (PDOException $e) {
     setFlashMessage('error', 'Error al cargar las actividades.');
     redirect('/index.php');
@@ -66,6 +65,7 @@ try {
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -87,16 +87,36 @@ try {
             theme: {
                 extend: {
                     colors: {
-                        xanthous: { DEFAULT: '#FFBA49' },
-                        seagreen: { DEFAULT: '#20A39E' },
-                        bittersweet: { DEFAULT: '#EF5B5B' },
-                        darkpurple: { DEFAULT: '#23001E' },
-                        cadet: { DEFAULT: '#A4A9AD' },
-                        primary: { DEFAULT: '#23001E' },
-                        secondary: { DEFAULT: '#20A39E' },
-                        accent: { DEFAULT: '#FFBA49' },
-                        error: { DEFAULT: '#EF5B5B' },
-                        base: { DEFAULT: '#A4A9AD' }
+                        xanthous: {
+                            DEFAULT: '#FFBA49'
+                        },
+                        seagreen: {
+                            DEFAULT: '#20A39E'
+                        },
+                        bittersweet: {
+                            DEFAULT: '#EF5B5B'
+                        },
+                        darkpurple: {
+                            DEFAULT: '#23001E'
+                        },
+                        cadet: {
+                            DEFAULT: '#A4A9AD'
+                        },
+                        primary: {
+                            DEFAULT: '#23001E'
+                        },
+                        secondary: {
+                            DEFAULT: '#20A39E'
+                        },
+                        accent: {
+                            DEFAULT: '#FFBA49'
+                        },
+                        error: {
+                            DEFAULT: '#EF5B5B'
+                        },
+                        base: {
+                            DEFAULT: '#A4A9AD'
+                        }
                     }
                 }
             }
@@ -108,42 +128,42 @@ try {
         .gantt_container {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         .gantt_task_line {
             border-radius: 3px;
         }
-        
+
         .gantt_task_line.gantt_project {
             background-color: #23001E;
             border-color: #23001E;
         }
-        
+
         .gantt_task_line.gantt_task {
             background-color: #20A39E;
             border-color: #20A39E;
         }
-        
+
         .gantt_task_line.gantt_milestone {
             background-color: #FFBA49;
             border-color: #FFBA49;
         }
-        
+
         .gantt_task_line.gantt_completed {
             background-color: #28a745;
             border-color: #28a745;
         }
-        
+
         .gantt_task_line.gantt_delayed {
             background-color: #EF5B5B;
             border-color: #EF5B5B;
         }
-        
+
         .gantt_task_line.gantt_overdue {
             background-color: #dc3545;
             border-color: #dc3545;
             opacity: 0.8;
         }
-        
+
         .gantt_task_line.gantt_overdue::after {
             content: "⚠";
             position: absolute;
@@ -160,45 +180,45 @@ try {
             font-size: 12px;
             font-weight: bold;
         }
-        
+
         .gantt_grid_head_cell {
             background-color: #f8f9fa;
             border-color: #dee2e6;
             font-weight: 600;
             color: #23001E;
         }
-        
+
         .gantt_grid_data {
             border-color: #dee2e6;
         }
-        
+
         .gantt_row {
             border-color: #dee2e6;
         }
-        
+
         .gantt_cell {
             border-color: #dee2e6;
         }
-        
+
         .gantt_task_progress {
             background-color: #FFBA49;
         }
-        
+
         .gantt_task_progress_wrapper {
             background-color: rgba(255, 186, 73, 0.3);
         }
-        
+
         .gantt_scale_cell {
             background-color: #f8f9fa;
             border-color: #dee2e6;
             font-weight: 600;
             color: #23001E;
         }
-        
+
         .gantt_scale_line {
             border-color: #dee2e6;
         }
-        
+
         /* Estilos para edición inline */
         .gantt_cell_editor {
             border: 2px solid #20A39E;
@@ -206,129 +226,131 @@ try {
             padding: 2px 4px;
             background: white;
         }
-        
+
         .gantt_cell_editor:focus {
             outline: none;
             border-color: #23001E;
             box-shadow: 0 0 0 2px rgba(35, 0, 30, 0.2);
         }
-        
+
         /* Estilos para tooltips mejorados */
         .gantt_tooltip {
             background: white;
             border: 1px solid #dee2e6;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         /* Estilos para filtros */
         .filter-badge {
             transition: all 0.3s ease;
         }
-        
+
         .filter-badge:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        
+
         /* Estilos para controles de zoom */
         .zoom-controls button {
             transition: all 0.2s ease;
         }
-        
+
         .zoom-controls button:hover {
             transform: scale(1.05);
         }
-        
+
         /* Estilos para notificaciones */
         .notification {
             animation: slideIn 0.3s ease-out;
         }
-        
+
         @keyframes slideIn {
             from {
                 transform: translateX(100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateX(0);
                 opacity: 1;
             }
         }
-        
+
         /* Estilos para el modal mejorado */
         .modal-content {
             animation: modalSlideIn 0.3s ease-out;
         }
-        
+
         @keyframes modalSlideIn {
             from {
                 transform: translateY(-50px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
             }
         }
-        
+
         /* Estilos para estadísticas con hover */
         .stats-card {
             transition: all 0.3s ease;
             cursor: pointer;
         }
-        
+
         .stats-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
-        
+
         /* Estilos para botones de acción */
         .action-button {
             transition: all 0.2s ease;
         }
-        
+
         .action-button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
-        
+
         /* Estilos para el grid del Gantt */
         .gantt_grid_scale .gantt_grid_head_cell,
         .gantt_task .gantt_task_scale .gantt_scale_cell {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         }
-        
+
         /* Estilos para las filas alternadas */
         .gantt_row:nth-child(even) {
             background-color: rgba(248, 249, 250, 0.5);
         }
-        
+
         .gantt_row:hover {
             background-color: rgba(32, 163, 158, 0.1);
         }
-        
+
         /* Estilos para el scrollbar personalizado */
         .gantt_container ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
         }
-        
+
         .gantt_container ::-webkit-scrollbar-track {
             background: #f1f1f1;
             border-radius: 4px;
         }
-        
+
         .gantt_container ::-webkit-scrollbar-thumb {
             background: #c1c1c1;
             border-radius: 4px;
         }
-        
+
         .gantt_container ::-webkit-scrollbar-thumb:hover {
             background: #a8a8a8;
         }
-        
+
         /* Estilos para el estado de carga */
         .gantt_loading {
             position: absolute;
@@ -338,10 +360,10 @@ try {
             background: rgba(255, 255, 255, 0.9);
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             z-index: 1000;
         }
-        
+
         /* Estilos para el indicador de progreso */
         .progress-indicator {
             position: relative;
@@ -352,51 +374,51 @@ try {
             border-radius: 3px;
             overflow: hidden;
         }
-        
+
         .progress-bar {
             height: 100%;
             background: linear-gradient(90deg, #20A39E 0%, #FFBA49 100%);
             border-radius: 3px;
             transition: width 0.3s ease;
         }
-        
+
         /* Responsive */
         @media (max-width: 768px) {
             .gantt_container {
                 font-size: 12px;
             }
-            
+
             .gantt_grid_head_cell,
             .gantt_scale_cell {
                 font-size: 11px;
             }
-            
+
             .gantt_config_columns {
                 min-width: 80px;
             }
-            
+
             .zoom-controls {
                 flex-direction: column;
                 gap: 4px;
             }
-            
+
             .zoom-controls button {
                 padding: 6px 8px;
                 font-size: 12px;
             }
         }
-        
+
         @media (max-width: 480px) {
             .gantt_container {
                 font-size: 10px;
             }
-            
+
             .gantt_grid_head_cell,
             .gantt_scale_cell {
                 font-size: 10px;
                 padding: 4px 2px;
             }
-            
+
             .gantt_config_columns {
                 min-width: 60px;
             }
@@ -407,105 +429,105 @@ try {
 <body class="bg-gray-50">
     <?php require_once 'includes/header.php'; ?>
 
-    <div class="container mx-auto px-4 py-6">
+    <div class="container px-4 py-6 mx-auto">
         <!-- Header del Gantt -->
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div class="p-6 mb-6 bg-white rounded-xl shadow-lg">
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold text-primary mb-2">
-                        <i class="fas fa-chart-gantt text-accent mr-2"></i>
+                    <h1 class="mb-2 text-2xl font-bold text-primary">
+                        <i class="mr-2 fas fa-chart-gantt text-accent"></i>
                         Diagrama de Gantt
                     </h1>
                     <p class="text-cadet">Visualización temporal de actividades y proyectos</p>
                 </div>
-                
+
                 <div class="flex flex-wrap gap-2">
-                    <button onclick="exportarPDF()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors action-button">
-                        <i class="fas fa-file-pdf mr-2"></i>Exportar PDF
+                    <button onclick="exportarPDF()" class="px-4 py-2 text-white rounded-lg transition-colors bg-primary hover:bg-primary/90 action-button">
+                        <i class="mr-2 fas fa-file-pdf"></i>Exportar PDF
                     </button>
-                    <button onclick="exportarExcel()" class="bg-secondary text-white px-4 py-2 rounded-lg hover:bg-secondary/90 transition-colors action-button">
-                        <i class="fas fa-file-excel mr-2"></i>Exportar Excel
+                    <button onclick="exportarExcel()" class="px-4 py-2 text-white rounded-lg transition-colors bg-secondary hover:bg-secondary/90 action-button">
+                        <i class="mr-2 fas fa-file-excel"></i>Exportar Excel
                     </button>
-                    <button onclick="exportarDatosFiltrados()" class="bg-accent text-darkpurple px-4 py-2 rounded-lg hover:bg-accent/90 transition-colors action-button">
-                        <i class="fas fa-file-csv mr-2"></i>Exportar CSV
+                    <button onclick="exportarDatosFiltrados()" class="px-4 py-2 rounded-lg transition-colors bg-accent text-darkpurple hover:bg-accent/90 action-button">
+                        <i class="mr-2 fas fa-file-csv"></i>Exportar CSV
                     </button>
-                    <button onclick="imprimirGantt()" class="bg-cadet text-white px-4 py-2 rounded-lg hover:bg-cadet/90 transition-colors action-button">
-                        <i class="fas fa-print mr-2"></i>Imprimir
+                    <button onclick="imprimirGantt()" class="px-4 py-2 text-white rounded-lg transition-colors bg-cadet hover:bg-cadet/90 action-button">
+                        <i class="mr-2 fas fa-print"></i>Imprimir
                     </button>
                 </div>
             </div>
         </div>
 
         <!-- Estadísticas -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-            <div class="bg-white rounded-xl shadow-lg p-4 border-l-4 border-blue-500 stats-card" onclick="filtrarPorEstado('')">
-                <div class="flex items-center justify-between">
+        <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2 lg:grid-cols-5">
+            <div class="p-4 bg-white rounded-xl border-l-4 border-blue-500 shadow-lg stats-card" onclick="filtrarPorEstado('')">
+                <div class="flex justify-between items-center">
                     <div>
                         <p class="text-sm text-cadet">Total Actividades</p>
                         <p class="text-2xl font-bold text-primary"><?php echo $stats['total_actividades']; ?></p>
                     </div>
-                    <i class="fas fa-tasks text-blue-500 text-2xl"></i>
+                    <i class="text-2xl text-blue-500 fas fa-tasks"></i>
                 </div>
             </div>
-            
-            <div class="bg-white rounded-xl shadow-lg p-4 border-l-4 border-green-500 stats-card" onclick="filtrarPorEstado('Completada')">
-                <div class="flex items-center justify-between">
+
+            <div class="p-4 bg-white rounded-xl border-l-4 border-green-500 shadow-lg stats-card" onclick="filtrarPorEstado('Completada')">
+                <div class="flex justify-between items-center">
                     <div>
                         <p class="text-sm text-cadet">Completadas</p>
                         <p class="text-2xl font-bold text-green-600"><?php echo $stats['completadas']; ?></p>
                     </div>
-                    <i class="fas fa-check-circle text-green-500 text-2xl"></i>
+                    <i class="text-2xl text-green-500 fas fa-check-circle"></i>
                 </div>
             </div>
-            
-            <div class="bg-white rounded-xl shadow-lg p-4 border-l-4 border-yellow-500 stats-card" onclick="filtrarPorEstado('En Progreso')">
-                <div class="flex items-center justify-between">
+
+            <div class="p-4 bg-white rounded-xl border-l-4 border-yellow-500 shadow-lg stats-card" onclick="filtrarPorEstado('En Progreso')">
+                <div class="flex justify-between items-center">
                     <div>
                         <p class="text-sm text-cadet">En Progreso</p>
                         <p class="text-2xl font-bold text-yellow-600"><?php echo $stats['en_progreso']; ?></p>
                     </div>
-                    <i class="fas fa-clock text-yellow-500 text-2xl"></i>
+                    <i class="text-2xl text-yellow-500 fas fa-clock"></i>
                 </div>
             </div>
-            
-            <div class="bg-white rounded-xl shadow-lg p-4 border-l-4 border-blue-400 stats-card" onclick="filtrarPorEstado('Programada')">
-                <div class="flex items-center justify-between">
+
+            <div class="p-4 bg-white rounded-xl border-l-4 border-blue-400 shadow-lg stats-card" onclick="filtrarPorEstado('Programada')">
+                <div class="flex justify-between items-center">
                     <div>
                         <p class="text-sm text-cadet">Programadas</p>
                         <p class="text-2xl font-bold text-blue-600"><?php echo $stats['programadas']; ?></p>
                     </div>
-                    <i class="fas fa-calendar text-blue-400 text-2xl"></i>
+                    <i class="text-2xl text-blue-400 fas fa-calendar"></i>
                 </div>
             </div>
-            
-            <div class="bg-white rounded-xl shadow-lg p-4 border-l-4 border-red-500 stats-card" onclick="filtrarPorEstado('Cancelada')">
-                <div class="flex items-center justify-between">
+
+            <div class="p-4 bg-white rounded-xl border-l-4 border-red-500 shadow-lg stats-card" onclick="filtrarPorEstado('Cancelada')">
+                <div class="flex justify-between items-center">
                     <div>
                         <p class="text-sm text-cadet">Canceladas</p>
                         <p class="text-2xl font-bold text-red-600"><?php echo $stats['canceladas']; ?></p>
                     </div>
-                    <i class="fas fa-times-circle text-red-500 text-2xl"></i>
+                    <i class="text-2xl text-red-500 fas fa-times-circle"></i>
                 </div>
             </div>
         </div>
 
         <!-- Filtros -->
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-            <h3 class="text-lg font-semibold text-primary mb-4">
-                <i class="fas fa-filter text-accent mr-2"></i>Filtros
+        <div class="p-6 mb-6 bg-white rounded-xl shadow-lg">
+            <h3 class="mb-4 text-lg font-semibold text-primary">
+                <i class="mr-2 fas fa-filter text-accent"></i>Filtros
             </h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <div>
-                    <label class="block text-sm font-medium text-darkpurple mb-2">Eje Estratégico</label>
-                    <select id="filtro-eje" class="w-full px-3 py-2 border border-cadet/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                    <label class="block mb-2 text-sm font-medium text-darkpurple">Eje Estratégico</label>
+                    <select id="filtro-eje" class="px-3 py-2 w-full rounded-lg border border-cadet/50 focus:outline-none focus:ring-2 focus:ring-primary">
                         <option value="">Todos los ejes</option>
                     </select>
                 </div>
-                
+
                 <div>
-                    <label class="block text-sm font-medium text-darkpurple mb-2">Estado</label>
-                    <select id="filtro-estado" class="w-full px-3 py-2 border border-cadet/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                    <label class="block mb-2 text-sm font-medium text-darkpurple">Estado</label>
+                    <select id="filtro-estado" class="px-3 py-2 w-full rounded-lg border border-cadet/50 focus:outline-none focus:ring-2 focus:ring-primary">
                         <option value="">Todos los estados</option>
                         <option value="Programada">Programada</option>
                         <option value="En Progreso">En Progreso</option>
@@ -513,48 +535,48 @@ try {
                         <option value="Cancelada">Cancelada</option>
                     </select>
                 </div>
-                
+
                 <div>
-                    <label class="block text-sm font-medium text-darkpurple mb-2">Responsable</label>
-                    <select id="filtro-responsable" class="w-full px-3 py-2 border border-cadet/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                    <label class="block mb-2 text-sm font-medium text-darkpurple">Responsable</label>
+                    <select id="filtro-responsable" class="px-3 py-2 w-full rounded-lg border border-cadet/50 focus:outline-none focus:ring-2 focus:ring-primary">
                         <option value="">Todos los responsables</option>
                     </select>
                 </div>
-                
+
                 <div>
-                    <label class="block text-sm font-medium text-darkpurple mb-2">Rango de Fechas</label>
+                    <label class="block mb-2 text-sm font-medium text-darkpurple">Rango de Fechas</label>
                     <div class="flex gap-2">
-                        <input type="date" id="fecha-inicio" class="flex-1 px-3 py-2 border border-cadet/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                        <input type="date" id="fecha-fin" class="flex-1 px-3 py-2 border border-cadet/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                        <input type="date" id="fecha-inicio" class="flex-1 px-3 py-2 rounded-lg border border-cadet/50 focus:outline-none focus:ring-2 focus:ring-primary">
+                        <input type="date" id="fecha-fin" class="flex-1 px-3 py-2 rounded-lg border border-cadet/50 focus:outline-none focus:ring-2 focus:ring-primary">
                     </div>
                 </div>
             </div>
-            
+
             <div class="flex gap-2 mt-4">
-                <button onclick="aplicarFiltros()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
-                    <i class="fas fa-search mr-2"></i>Aplicar Filtros
+                <button onclick="aplicarFiltros()" class="px-4 py-2 text-white rounded-lg transition-colors bg-primary hover:bg-primary/90">
+                    <i class="mr-2 fas fa-search"></i>Aplicar Filtros
                 </button>
-                <button onclick="limpiarFiltros()" class="bg-cadet text-white px-4 py-2 rounded-lg hover:bg-cadet/90 transition-colors">
-                    <i class="fas fa-times mr-2"></i>Limpiar
+                <button onclick="limpiarFiltros()" class="px-4 py-2 text-white rounded-lg transition-colors bg-cadet hover:bg-cadet/90">
+                    <i class="mr-2 fas fa-times"></i>Limpiar
                 </button>
             </div>
         </div>
 
         <!-- Contenedor del Gantt -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
+        <div class="p-6 bg-white rounded-xl shadow-lg">
             <div id="gantt_container" style="width: 100%; height: 600px;"></div>
         </div>
     </div>
 
     <!-- Modal para detalles de actividad -->
-    <div id="modal-actividad" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-        <div class="flex items-center justify-center min-h-screen p-4">
+    <div id="modal-actividad" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50">
+        <div class="flex justify-center items-center p-4 min-h-screen">
             <div class="bg-white rounded-xl shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                 <div class="p-6">
-                    <div class="flex items-center justify-between mb-4">
+                    <div class="flex justify-between items-center mb-4">
                         <h3 class="text-xl font-bold text-primary">Detalles de la Actividad</h3>
                         <button onclick="cerrarModal()" class="text-cadet hover:text-primary">
-                            <i class="fas fa-times text-xl"></i>
+                            <i class="text-xl fas fa-times"></i>
                         </button>
                     </div>
                     <div id="modal-content"></div>
@@ -568,53 +590,125 @@ try {
     <script>
         // Datos de las actividades desde PHP
         const actividadesData = <?php echo json_encode($actividades); ?>;
-        
+
         // Configuración del Gantt
         gantt.config.date_format = "%Y-%m-%d %H:%i";
-        gantt.config.scales = [
-            {unit: "month", step: 1, format: "%F, %Y"},
-            {unit: "week", step: 1, format: "%j"}
+        gantt.config.scales = [{
+                unit: "month",
+                step: 1,
+                format: "%F, %Y"
+            },
+            {
+                unit: "week",
+                step: 1,
+                format: "%j"
+            }
         ];
-        
+
         // Configuración avanzada
         gantt.config.drag_resize = true;
         gantt.config.drag_move = true;
         gantt.config.drag_progress = true;
         gantt.config.drag_links = true;
         gantt.config.drag_plan = true;
-        
+
         // Configuración de edición
         gantt.config.inline_editing = true;
         gantt.config.auto_scheduling = false;
         gantt.config.auto_scheduling_strict = false;
         gantt.config.work_time = true;
         gantt.config.correct_work_time = true;
-        
+
         // Configuración de columnas
-        gantt.config.columns = [
-            {name: "text", label: "Actividad", width: 200, tree: true, editor: {type: "text", map_to: "text"}},
-            {name: "responsable", label: "Responsable", width: 120, editor: {type: "select", map_to: "responsable", options: []}},
-            {name: "estado", label: "Estado", width: 100, template: function(obj) {
-                const estados = {
-                    'Programada': '<span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">Programada</span>',
-                    'En Progreso': '<span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">En Progreso</span>',
-                    'Completada': '<span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Completada</span>',
-                    'Cancelada': '<span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Cancelada</span>'
-                };
-                return estados[obj.estado] || obj.estado;
-            }, editor: {type: "select", map_to: "estado", options: [
-                {key: "Programada", label: "Programada"},
-                {key: "En Progreso", label: "En Progreso"},
-                {key: "Completada", label: "Completada"},
-                {key: "Cancelada", label: "Cancelada"}
-            ]}},
-            {name: "lugar", label: "Lugar", width: 150, editor: {type: "text", map_to: "lugar"}},
-            {name: "tipo", label: "Tipo", width: 100, editor: {type: "text", map_to: "tipo"}},
-            {name: "progress", label: "Progreso", width: 80, template: function(obj) {
-                return Math.round(obj.progress || 0) + "%";
-            }, editor: {type: "number", map_to: "progress", min: 0, max: 100}}
+        gantt.config.columns = [{
+                name: "text",
+                label: "Actividad",
+                width: 200,
+                tree: true,
+                editor: {
+                    type: "text",
+                    map_to: "text"
+                }
+            },
+            {
+                name: "responsable",
+                label: "Responsable",
+                width: 120,
+                editor: {
+                    type: "select",
+                    map_to: "responsable",
+                    options: []
+                }
+            },
+            {
+                name: "estado",
+                label: "Estado",
+                width: 100,
+                template: function(obj) {
+                    const estados = {
+                        'Programada': '<span class="px-2 py-1 text-xs text-blue-800 bg-blue-100 rounded-full">Programada</span>',
+                        'En Progreso': '<span class="px-2 py-1 text-xs text-yellow-800 bg-yellow-100 rounded-full">En Progreso</span>',
+                        'Completada': '<span class="px-2 py-1 text-xs text-green-800 bg-green-100 rounded-full">Completada</span>',
+                        'Cancelada': '<span class="px-2 py-1 text-xs text-red-800 bg-red-100 rounded-full">Cancelada</span>'
+                    };
+                    return estados[obj.estado] || obj.estado;
+                },
+                editor: {
+                    type: "select",
+                    map_to: "estado",
+                    options: [{
+                            key: "Programada",
+                            label: "Programada"
+                        },
+                        {
+                            key: "En Progreso",
+                            label: "En Progreso"
+                        },
+                        {
+                            key: "Completada",
+                            label: "Completada"
+                        },
+                        {
+                            key: "Cancelada",
+                            label: "Cancelada"
+                        }
+                    ]
+                }
+            },
+            {
+                name: "lugar",
+                label: "Lugar",
+                width: 150,
+                editor: {
+                    type: "text",
+                    map_to: "lugar"
+                }
+            },
+            {
+                name: "tipo",
+                label: "Tipo",
+                width: 100,
+                editor: {
+                    type: "text",
+                    map_to: "tipo"
+                }
+            },
+            {
+                name: "progress",
+                label: "Progreso",
+                width: 80,
+                template: function(obj) {
+                    return Math.round(obj.progress || 0) + "%";
+                },
+                editor: {
+                    type: "number",
+                    map_to: "progress",
+                    min: 0,
+                    max: 100
+                }
+            }
         ];
-        
+
         // Configuración de enlaces
         gantt.config.links = {
             finish_to_start: "0",
@@ -622,32 +716,32 @@ try {
             finish_to_finish: "2",
             start_to_finish: "3"
         };
-        
+
         // Configuración de tooltips
         gantt.templates.tooltip_text = function(start, end, task) {
             const duracion = gantt.calculateDuration(start, end);
             return `<div class="p-3">
-                <h4 class="font-bold text-lg mb-2">${task.text}</h4>
-                <p class="text-sm mb-1"><strong>Inicio:</strong> ${gantt.templates.tooltip_date_format(start)}</p>
-                <p class="text-sm mb-1"><strong>Fin:</strong> ${gantt.templates.tooltip_date_format(end)}</p>
-                <p class="text-sm mb-1"><strong>Duración:</strong> ${duracion} días</p>
-                <p class="text-sm mb-1"><strong>Estado:</strong> ${task.estado}</p>
-                <p class="text-sm mb-1"><strong>Responsable:</strong> ${task.responsable}</p>
-                <p class="text-sm mb-1"><strong>Lugar:</strong> ${task.lugar || 'No especificado'}</p>
-                <p class="text-sm mb-1"><strong>Progreso:</strong> ${Math.round(task.progress || 0)}%</p>
-                ${task.descripcion ? `<p class="text-sm mt-2"><strong>Descripción:</strong> ${task.descripcion}</p>` : ''}
+                <h4 class="mb-2 text-lg font-bold">${task.text}</h4>
+                <p class="mb-1 text-sm"><strong>Inicio:</strong> ${gantt.templates.tooltip_date_format(start)}</p>
+                <p class="mb-1 text-sm"><strong>Fin:</strong> ${gantt.templates.tooltip_date_format(end)}</p>
+                <p class="mb-1 text-sm"><strong>Duración:</strong> ${duracion} días</p>
+                <p class="mb-1 text-sm"><strong>Estado:</strong> ${task.estado}</p>
+                <p class="mb-1 text-sm"><strong>Responsable:</strong> ${task.responsable}</p>
+                <p class="mb-1 text-sm"><strong>Lugar:</strong> ${task.lugar || 'No especificado'}</p>
+                <p class="mb-1 text-sm"><strong>Progreso:</strong> ${Math.round(task.progress || 0)}%</p>
+                ${task.descripcion ? `<p class="mt-2 text-sm"><strong>Descripción:</strong> ${task.descripcion}</p>` : ''}
             </div>`;
         };
-        
+
         // Configuración de fechas
         gantt.templates.tooltip_date_format = function(date) {
             return gantt.date.date_to_str("%d/%m/%Y %H:%i")(date);
         };
-        
+
         // Configuración de colores por estado
         gantt.templates.task_class = function(start, end, task) {
             let classes = [];
-            
+
             if (task.estado === 'Completada') {
                 classes.push('gantt_completed');
             } else if (task.estado === 'Cancelada') {
@@ -657,20 +751,20 @@ try {
             } else {
                 classes.push('gantt_project');
             }
-            
+
             // Agregar clase para tareas vencidas
             if (end < new Date() && task.estado !== 'Completada') {
                 classes.push('gantt_overdue');
             }
-            
+
             return classes.join(' ');
         };
-        
+
         // Configuración de barras de progreso
         gantt.templates.progress_text = function(start, end, task) {
             return Math.round(task.progress || 0) + "%";
         };
-        
+
         // Eventos del Gantt
         gantt.attachEvent("onTaskClick", function(id, e) {
             if (e.target.classList.contains('gantt_cell')) {
@@ -679,38 +773,38 @@ try {
             mostrarDetallesActividad(id);
             return false;
         });
-        
+
         gantt.attachEvent("onTaskDblClick", function(id, e) {
             mostrarDetallesActividad(id);
             return false;
         });
-        
+
         // Evento de cambio de tarea
         gantt.attachEvent("onAfterTaskUpdate", function(id, task) {
             actualizarActividadEnBD(id, task);
         });
-        
+
         // Evento de creación de tarea
         gantt.attachEvent("onAfterTaskAdd", function(id, task) {
             console.log("Nueva tarea creada:", task);
         });
-        
+
         // Evento de eliminación de tarea
         gantt.attachEvent("onAfterTaskDelete", function(id) {
             console.log("Tarea eliminada:", id);
         });
-        
+
         // Evento de cambio de fecha
         gantt.attachEvent("onAfterTaskDrag", function(id, mode, e) {
             const task = gantt.getTask(id);
             actualizarActividadEnBD(id, task);
         });
-        
+
         // Función para actualizar actividad en BD
         function actualizarActividadEnBD(id, task) {
             // Aquí se implementaría la llamada AJAX para actualizar la BD
             console.log("Actualizando actividad:", id, task);
-            
+
             // Ejemplo de implementación AJAX:
             /*
             fetch('/api/actividades/actualizar.php', {
@@ -742,7 +836,7 @@ try {
             });
             */
         }
-        
+
         // Función para mostrar notificación
         function mostrarNotificacion(mensaje, tipo) {
             const notificacion = document.createElement('div');
@@ -751,19 +845,19 @@ try {
             }`;
             notificacion.textContent = mensaje;
             document.body.appendChild(notificacion);
-            
+
             setTimeout(() => {
                 notificacion.remove();
             }, 3000);
         }
-        
+
         // Función para mostrar detalles de actividad
         function mostrarDetallesActividad(id) {
             const task = gantt.getTask(id);
             const actividad = actividadesData.find(a => a.id == id);
-            
+
             if (!actividad) return;
-            
+
             const modalContent = `
                 <div class="space-y-4">
                     <div>
@@ -817,54 +911,54 @@ try {
                     ${actividad.descripcion ? `
                         <div>
                             <span class="text-sm font-medium text-cadet">Descripción:</span>
-                            <div class="mt-1 p-3 bg-gray-50 rounded-lg">${actividad.descripcion}</div>
+                            <div class="p-3 mt-1 bg-gray-50 rounded-lg">${actividad.descripcion}</div>
                         </div>
                     ` : ''}
                     
                     ${actividad.meta ? `
                         <div>
                             <span class="text-sm font-medium text-cadet">Meta:</span>
-                            <div class="mt-1 p-3 bg-blue-50 rounded-lg">${actividad.meta}</div>
+                            <div class="p-3 mt-1 bg-blue-50 rounded-lg">${actividad.meta}</div>
                         </div>
                     ` : ''}
                     
                     ${actividad.observaciones ? `
                         <div>
                             <span class="text-sm font-medium text-cadet">Observaciones:</span>
-                            <div class="mt-1 p-3 bg-yellow-50 rounded-lg">${actividad.observaciones}</div>
+                            <div class="p-3 mt-1 bg-yellow-50 rounded-lg">${actividad.observaciones}</div>
                         </div>
                     ` : ''}
                     
                     <div class="flex gap-2 pt-4">
-                        <button onclick="editarActividad(${actividad.id})" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
-                            <i class="fas fa-edit mr-2"></i>Editar
+                        <button onclick="editarActividad(${actividad.id})" class="px-4 py-2 text-white rounded-lg transition-colors bg-primary hover:bg-primary/90">
+                            <i class="mr-2 fas fa-edit"></i>Editar
                         </button>
-                        <button onclick="verBeneficiarios(${actividad.id})" class="bg-secondary text-white px-4 py-2 rounded-lg hover:bg-secondary/90 transition-colors">
-                            <i class="fas fa-users mr-2"></i>Ver Beneficiarios
+                        <button onclick="verBeneficiarios(${actividad.id})" class="px-4 py-2 text-white rounded-lg transition-colors bg-secondary hover:bg-secondary/90">
+                            <i class="mr-2 fas fa-users"></i>Ver Beneficiarios
                         </button>
                     </div>
                 </div>
             `;
-            
+
             document.getElementById('modal-content').innerHTML = modalContent;
             document.getElementById('modal-actividad').classList.remove('hidden');
         }
-        
+
         // Función para editar actividad
         function editarActividad(id) {
             window.location.href = `/actividades/edit.php?id=${id}`;
         }
-        
+
         // Función para ver beneficiarios
         function verBeneficiarios(id) {
             window.location.href = `/captura_especial/ver_beneficiarios.php?id=${id}`;
         }
-        
+
         // Función para cerrar modal
         function cerrarModal() {
             document.getElementById('modal-actividad').classList.add('hidden');
         }
-        
+
         // --- FILTRO PERSONALIZADO DE ACTIVIDADES ---
         function filtrarActividades(filters) {
             // Filtra actividadesData según los filtros recibidos
@@ -902,7 +996,7 @@ try {
                 }))
             });
         }
-        
+
         // Modifico aplicarFiltros para usar filtrarActividades
         function aplicarFiltros() {
             const eje = document.getElementById('filtro-eje').value;
@@ -918,7 +1012,7 @@ try {
                 fecha_fin: fechaFin
             });
         }
-        
+
         // Modifico limpiarFiltros para recargar todas las actividades
         function limpiarFiltros() {
             document.getElementById('filtro-eje').value = '';
@@ -928,42 +1022,42 @@ try {
             document.getElementById('fecha-fin').value = '';
             filtrarActividades({});
         }
-        
+
         // Función para filtrar por estado desde las tarjetas de estadísticas
         function filtrarPorEstado(estado) {
             document.getElementById('filtro-estado').value = estado;
             aplicarFiltros();
-            
+
             // Mostrar notificación
             const mensaje = estado ? `Filtrando por estado: ${estado}` : 'Mostrando todas las actividades';
             mostrarNotificacion(mensaje, 'success');
         }
-        
+
         // Función para filtrar por eje desde las tarjetas de estadísticas
         function filtrarPorEje(eje) {
             document.getElementById('filtro-eje').value = eje;
             aplicarFiltros();
-            
+
             const mensaje = eje ? `Filtrando por eje: ${eje}` : 'Mostrando todos los ejes';
             mostrarNotificacion(mensaje, 'success');
         }
-        
+
         // Función para filtrar por responsable
         function filtrarPorResponsable(responsable) {
             document.getElementById('filtro-responsable').value = responsable;
             aplicarFiltros();
-            
+
             const mensaje = responsable ? `Filtrando por responsable: ${responsable}` : 'Mostrando todos los responsables';
             mostrarNotificacion(mensaje, 'success');
         }
-        
+
         // Función para mostrar actividades vencidas
         function mostrarActividadesVencidas() {
             const hoy = new Date();
             const tareasVencidas = gantt.getTaskByTime().filter(task => {
                 return task.end_date < hoy && task.estado !== 'Completada';
             });
-            
+
             if (tareasVencidas.length > 0) {
                 gantt.showTask(tareasVencidas[0].id);
                 mostrarNotificacion(`Se encontraron ${tareasVencidas.length} actividades vencidas`, 'warning');
@@ -971,16 +1065,16 @@ try {
                 mostrarNotificacion('No hay actividades vencidas', 'success');
             }
         }
-        
+
         // Función para mostrar actividades de hoy
         function mostrarActividadesHoy() {
             const hoy = new Date();
             hoy.setHours(0, 0, 0, 0);
             const manana = new Date(hoy);
             manana.setDate(manana.getDate() + 1);
-            
+
             const tareasHoy = gantt.getTaskByTime(hoy, manana);
-            
+
             if (tareasHoy.length > 0) {
                 gantt.showTask(tareasHoy[0].id);
                 mostrarNotificacion(`Se encontraron ${tareasHoy.length} actividades para hoy`, 'success');
@@ -988,19 +1082,19 @@ try {
                 mostrarNotificacion('No hay actividades programadas para hoy', 'info');
             }
         }
-        
+
         // Función para mostrar actividades de esta semana
         function mostrarActividadesSemana() {
             const hoy = new Date();
             const inicioSemana = new Date(hoy);
             inicioSemana.setDate(hoy.getDate() - hoy.getDay());
             inicioSemana.setHours(0, 0, 0, 0);
-            
+
             const finSemana = new Date(inicioSemana);
             finSemana.setDate(inicioSemana.getDate() + 7);
-            
+
             const tareasSemana = gantt.getTaskByTime(inicioSemana, finSemana);
-            
+
             if (tareasSemana.length > 0) {
                 gantt.showTask(tareasSemana[0].id);
                 mostrarNotificacion(`Se encontraron ${tareasSemana.length} actividades esta semana`, 'success');
@@ -1008,15 +1102,15 @@ try {
                 mostrarNotificacion('No hay actividades programadas esta semana', 'info');
             }
         }
-        
+
         // Función para mostrar actividades de este mes
         function mostrarActividadesMes() {
             const hoy = new Date();
             const inicioMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
             const finMes = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
-            
+
             const tareasMes = gantt.getTaskByTime(inicioMes, finMes);
-            
+
             if (tareasMes.length > 0) {
                 gantt.showTask(tareasMes[0].id);
                 mostrarNotificacion(`Se encontraron ${tareasMes.length} actividades este mes`, 'success');
@@ -1024,7 +1118,7 @@ try {
                 mostrarNotificacion('No hay actividades programadas este mes', 'info');
             }
         }
-        
+
         // Función para calcular estadísticas en tiempo real
         function actualizarEstadisticas() {
             const todasLasTareas = gantt.getTaskByTime();
@@ -1033,22 +1127,32 @@ try {
             const enProgreso = todasLasTareas.filter(t => t.estado === 'En Progreso').length;
             const programadas = todasLasTareas.filter(t => t.estado === 'Programada').length;
             const canceladas = todasLasTareas.filter(t => t.estado === 'Cancelada').length;
-            
+
             // Actualizar contadores en las tarjetas
             document.querySelectorAll('.stats-card').forEach((card, index) => {
                 const contador = card.querySelector('.text-2xl');
                 if (contador) {
-                    switch(index) {
-                        case 0: contador.textContent = total; break;
-                        case 1: contador.textContent = completadas; break;
-                        case 2: contador.textContent = enProgreso; break;
-                        case 3: contador.textContent = programadas; break;
-                        case 4: contador.textContent = canceladas; break;
+                    switch (index) {
+                        case 0:
+                            contador.textContent = total;
+                            break;
+                        case 1:
+                            contador.textContent = completadas;
+                            break;
+                        case 2:
+                            contador.textContent = enProgreso;
+                            break;
+                        case 3:
+                            contador.textContent = programadas;
+                            break;
+                        case 4:
+                            contador.textContent = canceladas;
+                            break;
                     }
                 }
             });
         }
-        
+
         // Función para exportar datos filtrados
         function exportarDatosFiltrados() {
             const tareasVisibles = gantt.getTaskByTime();
@@ -1064,16 +1168,18 @@ try {
                 Componente: tarea.componente,
                 Producto: tarea.producto
             }));
-            
+
             // Crear CSV
             const headers = Object.keys(datos[0]);
             const csvContent = [
                 headers.join(','),
                 ...datos.map(row => headers.map(header => `"${row[header]}"`).join(','))
             ].join('\n');
-            
+
             // Descargar archivo
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const blob = new Blob([csvContent], {
+                type: 'text/csv;charset=utf-8;'
+            });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
@@ -1083,143 +1189,177 @@ try {
             link.click();
             document.body.removeChild(link);
         }
-        
-        // Función para exportar PDF
-        function exportarPDF() {
+
+        // Función para exportar a Excel
+        function exportarExcel() {
             try {
                 const tareas = gantt.getTaskByTime();
-                let contenidoHTML = `
-                    <html>
-                    <head>
-                        <title>Reporte de Actividades - Diagrama de Gantt</title>
-                        <style>
-                            body { font-family: Arial, sans-serif; margin: 20px; }
-                            h1 { color: #23001E; text-align: center; }
-                            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                            th { background-color: #f8f9fa; font-weight: bold; }
-                            .estado-completada { background-color: #d4edda; }
-                            .estado-progreso { background-color: #fff3cd; }
-                            .estado-programada { background-color: #d1ecf1; }
-                            .estado-cancelada { background-color: #f8d7da; }
-                        </style>
-                    </head>
-                    <body>
-                        <h1>Reporte de Actividades - Diagrama de Gantt</h1>
-                        <p><strong>Fecha de generación:</strong> ${new Date().toLocaleDateString('es-ES')}</p>
-                        <p><strong>Total de actividades:</strong> ${tareas.length}</p>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Actividad</th>
-                                    <th>Responsable</th>
-                                    <th>Estado</th>
-                                    <th>Lugar</th>
-                                    <th>Fecha Inicio</th>
-                                    <th>Fecha Fin</th>
-                                    <th>Progreso</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                `;
+                let tabla = [
+                    [
+                        'Actividad',
+                        'Responsable',
+                        'Estado',
+                        'Lugar',
+                        'Fecha Inicio',
+                        'Fecha Fin',
+                        'Progreso'
+                    ]
+                ];
                 tareas.forEach(function(task) {
-                    const estadoClass = task.estado === 'Completada' ? 'estado-completada' : 
-                                      task.estado === 'En Progreso' ? 'estado-progreso' :
-                                      task.estado === 'Programada' ? 'estado-programada' : 'estado-cancelada';
-                    contenidoHTML += `
-                        <tr class="${estadoClass}">
-                            <td>${task.text}</td>
-                            <td>${task.responsable}</td>
-                            <td>${task.estado}</td>
-                            <td>${task.lugar || 'No especificado'}</td>
-                            <td>${gantt.templates.tooltip_date_format(task.start_date)}</td>
-                            <td>${gantt.templates.tooltip_date_format(task.end_date)}</td>
-                            <td>${Math.round(task.progress || 0)}%</td>
-                        </tr>
-                    `;
+                    tabla.push([
+                        task.text,
+                        task.responsable,
+                        task.estado,
+                        task.lugar || 'No especificado',
+                        gantt.templates.tooltip_date_format(task.start_date),
+                        gantt.templates.tooltip_date_format(task.end_date),
+                        Math.round(task.progress || 0) + '%'
+                    ]);
                 });
-                contenidoHTML += `
-                            </tbody>
-                        </table>
-                    </body>
-                    </html>
-                `;
-                const ventanaImpresion = window.open('', '_blank');
-                ventanaImpresion.document.write(contenidoHTML);
-                ventanaImpresion.document.close();
-                ventanaImpresion.onload = function() {
-                    ventanaImpresion.print();
-                    ventanaImpresion.close();
-                };
-                mostrarNotificacion('Generando PDF...', 'success');
+                let csvContent = '';
+                tabla.forEach(function(rowArray) {
+                    let row = rowArray.map(cell => '"' + (cell ? cell.toString().replace(/"/g, '""') : '') + '"').join(',');
+                    csvContent += row + '\r\n';
+                });
+                // Crear archivo Excel usando formato CSV (compatible con Excel)
+                const blob = new Blob([csvContent], {
+                    type: 'application/vnd.ms-excel'
+                });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `actividades_gantt_${new Date().toISOString().split('T')[0]}.xls`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                mostrarNotificacion('Exportando a Excel...', 'success');
             } catch (error) {
-                console.error('Error al exportar PDF:', error);
-                mostrarNotificacion('Error al generar PDF', 'error');
+                console.error('Error al exportar Excel:', error);
+                mostrarNotificacion('Error al exportar a Excel', 'error');
             }
         }
-        
+
+        // Función para exportar a CSV
+        function exportarCSV() {
+            try {
+                const tareas = gantt.getTaskByTime();
+                let tabla = [
+                    [
+                        'Actividad',
+                        'Responsable',
+                        'Estado',
+                        'Lugar',
+                        'Fecha Inicio',
+                        'Fecha Fin',
+                        'Progreso'
+                    ]
+                ];
+                tareas.forEach(function(task) {
+                    tabla.push([
+                        task.text,
+                        task.responsable,
+                        task.estado,
+                        task.lugar || 'No especificado',
+                        gantt.templates.tooltip_date_format(task.start_date),
+                        gantt.templates.tooltip_date_format(task.end_date),
+                        Math.round(task.progress || 0) + '%'
+                    ]);
+                });
+                let csvContent = '';
+                tabla.forEach(function(rowArray) {
+                    let row = rowArray.map(cell => '"' + (cell ? cell.toString().replace(/"/g, '""') : '') + '"').join(',');
+                    csvContent += row + '\r\n';
+                });
+                const blob = new Blob([csvContent], {
+                    type: 'text/csv;charset=utf-8;'
+                });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `actividades_gantt_${new Date().toISOString().split('T')[0]}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                mostrarNotificacion('Exportando a CSV...', 'success');
+            } catch (error) {
+                console.error('Error al exportar CSV:', error);
+                mostrarNotificacion('Error al exportar a CSV', 'error');
+            }
+        }
+
         // Funciones de zoom
         function zoomIn() {
             gantt.ext.zoom.zoomIn();
         }
-        
+
         function zoomOut() {
             gantt.ext.zoom.zoomOut();
         }
-        
+
         function zoomToFit() {
             gantt.ext.zoom.setLevel("month");
         }
-        
+
         // Inicialización del Gantt
         gantt.init("gantt_container");
-        
+
         // Cargar extensión de zoom
         gantt.ext.zoom.init({
-            levels: [
-                {
+            levels: [{
                     name: "day",
                     scale_height: 60,
                     min_column_width: 70,
-                    scales: [
-                        {unit: "day", step: 1, format: "%d %M"}
-                    ]
+                    scales: [{
+                        unit: "day",
+                        step: 1,
+                        format: "%d %M"
+                    }]
                 },
                 {
                     name: "week",
                     scale_height: 60,
                     min_column_width: 70,
-                    scales: [
-                        {unit: "week", step: 1, format: "Semana #%W"}
-                    ]
+                    scales: [{
+                        unit: "week",
+                        step: 1,
+                        format: "Semana #%W"
+                    }]
                 },
                 {
                     name: "month",
                     scale_height: 60,
                     min_column_width: 120,
-                    scales: [
-                        {unit: "month", step: 1, format: "%F, %Y"}
-                    ]
+                    scales: [{
+                        unit: "month",
+                        step: 1,
+                        format: "%F, %Y"
+                    }]
                 },
                 {
                     name: "quarter",
                     scale_height: 60,
                     min_column_width: 90,
-                    scales: [
-                        {unit: "quarter", step: 1, format: "%Q %Y"}
-                    ]
+                    scales: [{
+                        unit: "quarter",
+                        step: 1,
+                        format: "%Q %Y"
+                    }]
                 },
                 {
                     name: "year",
                     scale_height: 60,
                     min_column_width: 120,
-                    scales: [
-                        {unit: "year", step: 1, format: "%Y"}
-                    ]
+                    scales: [{
+                        unit: "year",
+                        step: 1,
+                        format: "%Y"
+                    }]
                 }
             ]
         });
-        
+
         // Preparar datos para el Gantt
         const tasks = {
             data: actividadesData.map(actividad => ({
@@ -1244,14 +1384,14 @@ try {
                 poligono: actividad.poligono_nombre
             }))
         };
-        
+
         // Cargar datos
         gantt.parse(tasks);
-        
+
         // Llenar filtros
         const ejes = [...new Set(actividadesData.map(a => a.eje_nombre).filter(Boolean))];
         const responsables = [...new Set(actividadesData.map(a => a.responsable_nombre ? a.responsable_nombre + ' ' + a.responsable_apellido : null).filter(Boolean))];
-        
+
         const filtroEje = document.getElementById('filtro-eje');
         ejes.forEach(eje => {
             const option = document.createElement('option');
@@ -1259,7 +1399,7 @@ try {
             option.textContent = eje;
             filtroEje.appendChild(option);
         });
-        
+
         const filtroResponsable = document.getElementById('filtro-responsable');
         responsables.forEach(responsable => {
             const option = document.createElement('option');
@@ -1269,4 +1409,5 @@ try {
         });
     </script>
 </body>
+
 </html>
