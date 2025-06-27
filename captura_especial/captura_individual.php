@@ -1,5 +1,5 @@
 <?php
-require_once '../includes/header.php';
+require_once '../includes/config.php';
 if (!isAuthenticated() || !hasRole('capturista')) redirect('/auth/login.php');
 
 $actividad_id = intval($_GET['id'] ?? 0);
@@ -20,6 +20,7 @@ try {
     }
     
     $sexos = ["Femenino", "Masculino", "Otro"];
+    $user = getCurrentUser();
     
 } catch (PDOException $e) {
     setFlashMessage('error', 'Error al cargar la actividad.');
@@ -27,11 +28,64 @@ try {
 }
 ?>
 
-<!-- Meta viewport para dispositivos móviles -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Captura Individual - Comunidades</title>
 
-<div class="min-h-screen bg-base">
-    <!-- Header móvil -->
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Configuración personalizada de Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        xanthous: {
+                            DEFAULT: '#FFBA49',
+                        },
+                        seagreen: {
+                            DEFAULT: '#20A39E',
+                        },
+                        bittersweet: {
+                            DEFAULT: '#EF5B5B',
+                        },
+                        darkpurple: {
+                            DEFAULT: '#23001E',
+                        },
+                        cadet: {
+                            DEFAULT: '#A4A9AD',
+                        },
+                        primary: {
+                            DEFAULT: '#23001E', // Dark purple
+                        },
+                        secondary: {
+                            DEFAULT: '#20A39E', // Light sea green
+                        },
+                        accent: {
+                            DEFAULT: '#FFBA49', // Xanthous
+                        },
+                        error: {
+                            DEFAULT: '#EF5B5B', // Bittersweet
+                        },
+                        base: {
+                            DEFAULT: '#A4A9AD', // Cadet gray
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-base min-h-screen">
+    <!-- Header específico para capturistas -->
     <div class="bg-white shadow-sm border-b border-cadet/20 px-4 py-3">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -40,11 +94,37 @@ try {
                 </a>
                 <h1 class="text-lg font-bold text-primary">Captura Individual</h1>
             </div>
+            
+            <!-- Menú de usuario -->
+            <div class="relative group">
+                <button class="flex items-center gap-2 text-primary font-medium hover:text-secondary focus:outline-none p-2 rounded-lg hover:bg-base transition-colors">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-sm font-bold">
+                        <?php echo strtoupper(substr($user['nombre'], 0, 1) . substr($user['apellido_paterno'], 0, 1)); ?>
+                    </div>
+                    <i class="fas fa-chevron-down text-xs"></i>
+                </button>
+                <div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 z-50 hidden group-hover:block group-focus-within:block border border-cadet/20">
+                    <div class="px-4 py-2 border-b border-cadet/20">
+                        <div class="text-sm font-medium text-darkpurple"><?php echo htmlspecialchars($user['nombre'] . ' ' . $user['apellido_paterno']); ?></div>
+                        <div class="text-xs text-cadet"><?php echo htmlspecialchars($user['email']); ?></div>
+                    </div>
+                    <a href="/usuarios/perfil.php" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2">
+                        <i class="fas fa-user"></i> Mi Perfil
+                    </a>
+                    <a href="/usuarios/update_perfil.php" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2">
+                        <i class="fas fa-edit"></i> Editar Perfil
+                    </a>
+                    <hr class="my-1">
+                    <a href="/auth/logout.php" class="block px-4 py-2 text-sm text-error hover:bg-base rounded-md flex items-center gap-2">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Formulario -->
-    <div class="p-4">
+    <!-- Formulario - 90% del ancho -->
+    <div class="w-[90%] mx-auto p-4">
         <div class="bg-white rounded-xl shadow-lg p-4 mb-4">
             <h2 class="font-semibold text-darkpurple text-lg mb-2">
                 <?php echo htmlspecialchars($actividad['nombre']); ?>
@@ -199,30 +279,34 @@ try {
             </div>
         </form>
     </div>
-</div>
 
-<style>
-/* Estilos específicos para móviles */
-@media (max-width: 768px) {
-    .min-h-screen {
-        min-height: 100vh;
+    <style>
+    /* Estilos específicos para móviles */
+    @media (max-width: 768px) {
+        .min-h-screen {
+            min-height: 100vh;
+        }
+        
+        /* Prevenir zoom en inputs en iOS */
+        input[type="text"], input[type="email"], input[type="tel"], input[type="date"], select, textarea {
+            font-size: 16px;
+        }
+        
+        /* Botones más grandes para touch */
+        button, a[href] {
+            min-height: 44px;
+        }
+        
+        /* Aprovechar más espacio en móviles */
+        .w-\[90\%\] {
+            width: 95%;
+        }
+        
+        /* Mejorar espaciado en móviles */
+        .space-y-4 > * + * {
+            margin-top: 1rem;
+        }
     }
-    
-    /* Prevenir zoom en inputs en iOS */
-    input[type="text"], input[type="email"], input[type="tel"], input[type="date"], select, textarea {
-        font-size: 16px;
-    }
-    
-    /* Botones más grandes para touch */
-    button, a[href] {
-        min-height: 44px;
-    }
-    
-    /* Mejorar espaciado en móviles */
-    .space-y-4 > * + * {
-        margin-top: 1rem;
-    }
-}
-</style>
-
-<?php require_once '../includes/footer.php'; ?> 
+    </style>
+</body>
+</html> 
