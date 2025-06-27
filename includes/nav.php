@@ -24,7 +24,7 @@
                 <?php endif; ?>
 
                 <?php if (hasRole('admin') || hasRole('coordinador')): ?>
-                <!-- Menú desplegable de Planificación Estratégica -->
+                <!-- Menú de planificación, gestión y administración solo para admin y coordinador -->
                 <div class="relative group">
                     <button class="text-primary hover:text-secondary px-2 py-1 rounded-md text-sm font-medium flex items-center gap-1 focus:outline-none">
                         <i class="fas fa-sitemap"></i> Planificación
@@ -40,7 +40,6 @@
                         <a href="/actividades/" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2"><i class="fas fa-tasks"></i> Actividades</a>
                     </div>
                 </div>
-                <!-- Menú desplegable de Gestión -->
                 <div class="relative group">
                     <button class="text-primary hover:text-secondary px-2 py-1 rounded-md text-sm font-medium flex items-center gap-1 focus:outline-none">
                         <i class="fas fa-users"></i> Gestión
@@ -55,7 +54,6 @@
                         <a href="/gantt.php" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2"><i class="fas fa-chart-gantt"></i> Diagrama Gantt</a>
                     </div>
                 </div>
-                <!-- Menú desplegable de Administración -->
                 <div class="relative group">
                     <button class="text-primary hover:text-secondary px-2 py-1 rounded-md text-sm font-medium flex items-center gap-1 focus:outline-none">
                         <i class="fas fa-cogs"></i> Administración
@@ -87,9 +85,16 @@
                 <?php endif; ?>
 
                 <?php if (hasRole('admin')): ?>
-                    <a href="/usuarios/index.php" class="text-primary font-medium text-sm flex items-center gap-2 hover:text-secondary transition-colors">
-                        <i class="fas fa-users-cog"></i> Usuarios
-                    </a>
+                    <div class="relative group">
+                        <button class="text-primary hover:text-secondary px-2 py-1 rounded-md text-sm font-medium flex items-center gap-1 focus:outline-none">
+                            <i class="fas fa-users-cog"></i> Administración de Usuarios
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <div class="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-lg py-2 z-50 hidden group-hover:block group-focus-within:block border border-cadet/20">
+                            <a href="/usuarios/index.php" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2"><i class="fas fa-users"></i> Usuarios</a>
+                            <a href="/roles/index.php" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2"><i class="fas fa-user-shield"></i> Roles</a>
+                        </div>
+                    </div>
                 <?php endif; ?>
             </div>
 
