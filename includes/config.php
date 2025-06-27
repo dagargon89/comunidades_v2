@@ -9,7 +9,6 @@ define('DB_CHARSET', 'utf8mb4');
 // Configuración de la aplicación
 define('APP_NAME', 'Comunidades v2');
 define('APP_URL', 'http://localhost');
-
 // Configuración de sesiones
 session_start();
 

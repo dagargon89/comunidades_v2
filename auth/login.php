@@ -1,11 +1,11 @@
 <?php
 $page_title = "Iniciar Sesión";
-require_once '../includes/header.php';
-
+require_once '../includes/config.php';
 // Si ya está autenticado, redirigir al dashboard
 if (isAuthenticated()) {
     redirect('/');
 }
+require_once '../includes/header.php';
 ?>
 
 <div class="flex flex-col items-center justify-center min-h-[80vh]">

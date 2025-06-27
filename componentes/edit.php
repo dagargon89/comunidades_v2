@@ -1,6 +1,4 @@
 <?php
-$page_title = "Editar Componente";
-require_once '../includes/header.php';
 if (!isAuthenticated()) redirect('/auth/login.php');
 $id = intval($_GET['id'] ?? 0);
 if ($id <= 0) redirect('index.php');
@@ -10,13 +8,14 @@ try {
     $stmt->execute([$id]);
     $componente = $stmt->fetch();
     if (!$componente) redirect('index.php');
-
     $stmt_ejes = $pdo->query("SELECT id, nombre FROM ejes ORDER BY nombre");
     $ejes = $stmt_ejes->fetchAll();
 } catch (PDOException $e) {
     setFlashMessage('error', 'Error al cargar el componente.');
     redirect('index.php');
 }
+$page_title = "Editar Componente";
+require_once '../includes/header.php';
 ?>
 <div class="flex flex-col items-center justify-center min-h-[70vh]">
     <div class="bg-white rounded-2xl shadow-2xl p-8 border border-cadet/40 w-full max-w-lg mx-auto">

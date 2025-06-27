@@ -58,7 +58,13 @@
 
 <body class="bg-base min-h-screen flex flex-col">
     <!-- Fondo Cadet gray -->
-    <?php include __DIR__ . '/nav.php'; ?>
+    <?php
+    $no_nav_pages = ['/auth/login.php', '/auth/registro.php'];
+    $current_page = $_SERVER['PHP_SELF'];
+    if (isAuthenticated() && !in_array($current_page, $no_nav_pages)) {
+        include __DIR__ . '/nav.php';
+    }
+    ?>
     <!-- Mensajes flash -->
     <?php
     $flash = getFlashMessage();
