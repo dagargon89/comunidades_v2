@@ -167,18 +167,6 @@ function getFullName($user)
     return $name;
 }
 
-function getInitials($user)
-{
-    $initials = '';
-    if (!empty($user['nombre'])) {
-        $initials .= strtoupper(substr($user['nombre'], 0, 1));
-    }
-    if (!empty($user['apellido_paterno'])) {
-        $initials .= strtoupper(substr($user['apellido_paterno'], 0, 1));
-    }
-    return $initials;
-}
-
 function isValidEmail($email)
 {
     return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
@@ -195,18 +183,4 @@ function truncateText($text, $length = 100, $suffix = '...')
         return $text;
     }
     return substr($text, 0, $length) . $suffix;
-}
-
-function isValidImage($file)
-{
-    $allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-    return in_array($file['type'], $allowed_types);
-}
-
-function generateUniqueFileName($original_name, $prefix = '')
-{
-    $extension = pathinfo($original_name, PATHINFO_EXTENSION);
-    $timestamp = time();
-    $random = bin2hex(random_bytes(8));
-    return $prefix . $timestamp . '_' . $random . '.' . $extension;
 }

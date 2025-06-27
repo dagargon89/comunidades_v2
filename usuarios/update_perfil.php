@@ -67,46 +67,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Procesar subida de foto
-        $foto_perfil = null;
-        if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
-            $archivo = $_FILES['foto_perfil'];
-            $extension = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
-            $extensiones_permitidas = ['jpg', 'jpeg', 'png', 'gif'];
-
-            if (!in_array($extension, $extensiones_permitidas)) {
-                setFlashMessage('error', 'Solo se permiten archivos JPG, PNG y GIF.');
-                redirect('update_perfil.php');
-            }
-
-            if ($archivo['size'] > 2 * 1024 * 1024) { // 2MB
-                setFlashMessage('error', 'El archivo es demasiado grande. Máximo 2MB.');
-                redirect('update_perfil.php');
-            }
-
-            // Crear directorio si no existe
-            $upload_dir = '../assets/img/perfiles/';
-            if (!is_dir($upload_dir)) {
-                mkdir($upload_dir, 0755, true);
-            }
-
-            // Generar nombre único
-            $nombre_archivo = 'perfil_' . $_SESSION['user_id'] . '_' . time() . '.' . $extension;
-            $ruta_completa = $upload_dir . $nombre_archivo;
-
-            if (move_uploaded_file($archivo['tmp_name'], $ruta_completa)) {
-                $foto_perfil = 'assets/img/perfiles/' . $nombre_archivo;
-            }
-        }
-
         // Actualizar usuario
         $sql = "UPDATE usuarios SET nombre = ?, apellido_paterno = ?, apellido_materno = ?, email = ?, telefono = ?, puesto = ?, organizacion_id = ?";
         $params = [$nombre, $apellido_paterno, $apellido_materno, $email, $telefono, $puesto, $organizacion_id ?: null];
-
-        if ($foto_perfil) {
-            $sql .= ", foto_perfil = ?";
-            $params[] = $foto_perfil;
-        }
 
         if (!empty($password_nueva)) {
             $sql .= ", password = ?";
@@ -165,7 +128,7 @@ require_once '../includes/header.php';
             </a>
         </div>
 
-        <form action="update_perfil.php" method="POST" enctype="multipart/form-data" class="space-y-8">
+        <form action="update_perfil.php" method="POST" class="space-y-8">
             <!-- Información Personal -->
             <div class="bg-gradient-to-br from-primary/5 to-accent/5 rounded-xl p-6">
                 <h3 class="text-xl font-bold text-darkpurple mb-6 flex items-center gap-2">
@@ -233,33 +196,6 @@ require_once '../includes/header.php';
                             </option>
                         <?php endforeach; ?>
                     </select>
-                </div>
-            </div>
-
-            <!-- Foto de Perfil -->
-            <div class="bg-gradient-to-br from-primary/5 to-accent/5 rounded-xl p-6">
-                <h3 class="text-xl font-bold text-darkpurple mb-6 flex items-center gap-2">
-                    <i class="fas fa-camera text-accent"></i>
-                    Foto de Perfil
-                </h3>
-                <div class="flex items-center gap-6">
-                    <div class="flex-shrink-0">
-                        <?php if ($usuario['foto_perfil']): ?>
-                            <img src="<?php echo htmlspecialchars($usuario['foto_perfil']); ?>"
-                                alt="Foto actual"
-                                class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg">
-                        <?php else: ?>
-                            <div class="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-2xl font-bold border-4 border-white shadow-lg">
-                                <?php echo strtoupper(substr($usuario['nombre'], 0, 1) . substr($usuario['apellido_paterno'], 0, 1)); ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                    <div class="flex-1">
-                        <label for="foto_perfil" class="block text-sm font-semibold text-darkpurple mb-2">Nueva Foto (opcional)</label>
-                        <input type="file" id="foto_perfil" name="foto_perfil" accept="image/*"
-                            class="w-full px-4 py-3 border border-cadet/50 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-secondary">
-                        <p class="text-sm text-cadet mt-2">Formatos permitidos: JPG, PNG, GIF. Tamaño máximo: 2MB</p>
-                    </div>
                 </div>
             </div>
 

@@ -42,44 +42,16 @@ $roles = $stmt->fetchAll(PDO::FETCH_COLUMN);
             <!-- Columna izquierda: Foto y datos básicos -->
             <div class="lg:col-span-1">
                 <div class="bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl p-6 text-center">
-                    <div class="relative inline-block mb-4">
-                        <?php if ($usuario['foto_perfil']): ?>
-                            <img src="<?php echo htmlspecialchars($usuario['foto_perfil']); ?>"
-                                alt="Foto de perfil"
-                                class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
-                        <?php else: ?>
-                            <div class="w-32 h-32 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-4xl font-bold border-4 border-white shadow-lg">
-                                <?php echo strtoupper(substr($usuario['nombre'], 0, 1) . substr($usuario['apellido_paterno'], 0, 1)); ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-
-                    <h2 class="text-xl font-bold text-darkpurple mb-2">
+                    <!-- Eliminar foto de perfil, solo mostrar nombre -->
+                    <h2 class="text-xl font-bold text-darkpurple mb-2 mt-8">
                         <?php echo htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido_paterno'] . ' ' . $usuario['apellido_materno']); ?>
                     </h2>
-
                     <?php if ($usuario['puesto']): ?>
                         <p class="text-cadet font-medium mb-3">
                             <i class="fas fa-briefcase text-accent mr-2"></i>
                             <?php echo htmlspecialchars($usuario['puesto']); ?>
                         </p>
                     <?php endif; ?>
-
-                    <?php if (!empty($roles)): ?>
-                        <div class="flex flex-wrap justify-center gap-2 mb-4">
-                            <?php foreach ($roles as $rol): ?>
-                                <span class="bg-accent/20 text-accent px-3 py-1 rounded-full text-sm font-medium">
-                                    <?php echo htmlspecialchars($rol); ?>
-                                </span>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php endif; ?>
-
-                    <div class="text-sm text-cadet">
-                        <p><i class="fas fa-calendar-alt text-accent mr-2"></i>
-                            Miembro desde: <?php echo date('d/m/Y', strtotime($usuario['created_at'])); ?>
-                        </p>
-                    </div>
                 </div>
             </div>
 
