@@ -69,7 +69,21 @@ try {
     $stmt->execute([$user['id']]);
 
     setFlashMessage('success', '¡Bienvenido, ' . htmlspecialchars($user['nombre']) . '!');
-    redirect('/');
+
+    // Redirección según rol
+    if (hasRole('admin', $user['id'])) {
+        redirect('/');
+    } elseif (hasRole('financiadora', $user['id'])) {
+        redirect('/financiadora_dashboard.php');
+    } elseif (hasRole('coordinador', $user['id'])) {
+        redirect('/coordinador_dashboard.php');
+    } elseif (hasRole('usuario', $user['id'])) {
+        redirect('/bienvenida_usuario.php');
+    } elseif (hasRole('capturista', $user['id'])) {
+        redirect('/captura_especial.php');
+    } else {
+        redirect('/'); // Por defecto
+    }
 } catch (PDOException $e) {
     error_log("Error en login: " . $e->getMessage());
     setFlashMessage('error', 'Error interno del servidor. Por favor, intenta nuevamente.');

@@ -18,8 +18,12 @@
                         <i class="fas fa-home"></i> Dashboard Coordinador
                     </a>
                 <?php elseif (hasRole('usuario')): ?>
-                    <a href="/usuario_dashboard.php" class="text-primary font-bold text-lg flex items-center gap-2 hover:text-secondary transition-colors">
-                        <i class="fas fa-home"></i> Mi Panel
+                    <a href="/bienvenida_usuario.php" class="text-primary font-bold text-lg flex items-center gap-2 hover:text-secondary transition-colors">
+                        <i class="fas fa-home"></i> Bienvenida
+                    </a>
+                <?php elseif (hasRole('capturista')): ?>
+                    <a href="/captura_especial.php" class="text-primary font-bold text-lg flex items-center gap-2 hover:text-secondary transition-colors">
+                        <i class="fas fa-keyboard"></i> Captura Especial
                     </a>
                 <?php endif; ?>
 
@@ -67,21 +71,6 @@
                         <a href="/estados_actividad/" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2"><i class="fas fa-flag"></i> Estados de Actividad</a>
                     </div>
                 </div>
-                <?php endif; ?>
-
-                <?php if (hasRole('usuario')): ?>
-                    <a href="/beneficiarios/" class="text-primary font-medium text-sm flex items-center gap-2 hover:text-secondary transition-colors">
-                        <i class="fas fa-user-friends"></i> Beneficiarios
-                    </a>
-                    <a href="/usuario_dashboard.php" class="text-primary font-medium text-sm flex items-center gap-2 hover:text-secondary transition-colors">
-                        <i class="fas fa-chart-line"></i> Mi Seguimiento
-                    </a>
-                <?php endif; ?>
-
-                <?php if (hasRole('financiadora')): ?>
-                    <a href="/financiadora_dashboard.php" class="text-primary font-medium text-sm flex items-center gap-2 hover:text-secondary transition-colors">
-                        <i class="fas fa-chart-bar"></i> Seguimiento
-                    </a>
                 <?php endif; ?>
 
                 <?php if (hasRole('admin')): ?>
