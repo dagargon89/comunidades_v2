@@ -1,7 +1,8 @@
 <?php
+require_once '../includes/config.php';
+if (!isAuthenticated()) redirect('/auth/login.php');
 $page_title = "Tipos de Actividad";
 require_once '../includes/header.php';
-if (!isAuthenticated()) redirect('/auth/login.php');
 $busqueda = trim($_GET['q'] ?? '');
 try {
     $pdo = getDBConnection();

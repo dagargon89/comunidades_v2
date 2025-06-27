@@ -1,7 +1,8 @@
 <?php
+require_once '../includes/config.php';
+if (!isAuthenticated()) redirect('/auth/login.php');
 $page_title = "Beneficiarios por Actividad";
 require_once '../includes/header.php';
-if (!isAuthenticated()) redirect('/auth/login.php');
 
 $actividad_id = intval($_GET['actividad_id'] ?? 0);
 $busqueda = trim($_GET['q'] ?? '');

@@ -1,6 +1,4 @@
 <?php
-$page_title = "Editar Organización";
-require_once '../includes/header.php';
 if (!isAuthenticated()) redirect('/auth/login.php');
 $id = intval($_GET['id'] ?? 0);
 if ($id <= 0) redirect('index.php');
@@ -14,6 +12,8 @@ try {
     setFlashMessage('error', 'Error al cargar la organización.');
     redirect('index.php');
 }
+$page_title = "Editar Organización";
+require_once '../includes/header.php';
 ?>
 <div class="flex flex-col items-center justify-center min-h-[70vh]">
     <div class="bg-white rounded-2xl shadow-2xl p-8 border border-cadet/40 w-full max-w-lg mx-auto">

@@ -5,10 +5,25 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-14">
             <div class="flex items-center gap-8">
-                <a href="/" class="text-primary font-bold text-lg flex items-center gap-2 hover:text-secondary transition-colors">
-                    <i class="fas fa-home"></i> Dashboard
-                </a>
+                <?php if (hasRole('admin')): ?>
+                    <a href="/index.php" class="text-primary font-bold text-lg flex items-center gap-2 hover:text-secondary transition-colors">
+                        <i class="fas fa-home"></i> Dashboard Admin
+                    </a>
+                <?php elseif (hasRole('financiadora')): ?>
+                    <a href="/financiadora_dashboard.php" class="text-primary font-bold text-lg flex items-center gap-2 hover:text-secondary transition-colors">
+                        <i class="fas fa-home"></i> Dashboard Financiadora
+                    </a>
+                <?php elseif (hasRole('coordinador')): ?>
+                    <a href="/coordinador_dashboard.php" class="text-primary font-bold text-lg flex items-center gap-2 hover:text-secondary transition-colors">
+                        <i class="fas fa-home"></i> Dashboard Coordinador
+                    </a>
+                <?php elseif (hasRole('usuario')): ?>
+                    <a href="/usuario_dashboard.php" class="text-primary font-bold text-lg flex items-center gap-2 hover:text-secondary transition-colors">
+                        <i class="fas fa-home"></i> Mi Panel
+                    </a>
+                <?php endif; ?>
 
+                <?php if (hasRole('admin') || hasRole('coordinador')): ?>
                 <!-- Menú desplegable de Planificación Estratégica -->
                 <div class="relative group">
                     <button class="text-primary hover:text-secondary px-2 py-1 rounded-md text-sm font-medium flex items-center gap-1 focus:outline-none">
@@ -25,7 +40,6 @@
                         <a href="/actividades/" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2"><i class="fas fa-tasks"></i> Actividades</a>
                     </div>
                 </div>
-
                 <!-- Menú desplegable de Gestión -->
                 <div class="relative group">
                     <button class="text-primary hover:text-secondary px-2 py-1 rounded-md text-sm font-medium flex items-center gap-1 focus:outline-none">
@@ -41,7 +55,6 @@
                         <a href="/gantt.php" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2"><i class="fas fa-chart-gantt"></i> Diagrama Gantt</a>
                     </div>
                 </div>
-
                 <!-- Menú desplegable de Administración -->
                 <div class="relative group">
                     <button class="text-primary hover:text-secondary px-2 py-1 rounded-md text-sm font-medium flex items-center gap-1 focus:outline-none">
@@ -56,6 +69,28 @@
                         <a href="/estados_actividad/" class="block px-4 py-2 text-sm text-primary hover:bg-base rounded-md flex items-center gap-2"><i class="fas fa-flag"></i> Estados de Actividad</a>
                     </div>
                 </div>
+                <?php endif; ?>
+
+                <?php if (hasRole('usuario')): ?>
+                    <a href="/beneficiarios/" class="text-primary font-medium text-sm flex items-center gap-2 hover:text-secondary transition-colors">
+                        <i class="fas fa-user-friends"></i> Beneficiarios
+                    </a>
+                    <a href="/usuario_dashboard.php" class="text-primary font-medium text-sm flex items-center gap-2 hover:text-secondary transition-colors">
+                        <i class="fas fa-chart-line"></i> Mi Seguimiento
+                    </a>
+                <?php endif; ?>
+
+                <?php if (hasRole('financiadora')): ?>
+                    <a href="/financiadora_dashboard.php" class="text-primary font-medium text-sm flex items-center gap-2 hover:text-secondary transition-colors">
+                        <i class="fas fa-chart-bar"></i> Seguimiento
+                    </a>
+                <?php endif; ?>
+
+                <?php if (hasRole('admin')): ?>
+                    <a href="/usuarios/index.php" class="text-primary font-medium text-sm flex items-center gap-2 hover:text-secondary transition-colors">
+                        <i class="fas fa-users-cog"></i> Usuarios
+                    </a>
+                <?php endif; ?>
             </div>
 
             <!-- Menú de usuario alineado a la derecha -->

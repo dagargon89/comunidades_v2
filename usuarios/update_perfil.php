@@ -1,6 +1,6 @@
 <?php
+require_once '../includes/config.php';
 $page_title = "Editar Perfil";
-require_once '../includes/header.php';
 if (!isAuthenticated()) redirect('/auth/login.php');
 
 // Procesamiento del formulario
@@ -148,6 +148,8 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 $stmt = $pdo->prepare("SELECT id, nombre FROM organizaciones ORDER BY nombre");
 $stmt->execute();
 $organizaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+require_once '../includes/header.php';
 ?>
 
 <div class="flex flex-col items-center justify-center min-h-[70vh] py-8">

@@ -1,7 +1,8 @@
 <?php
+require_once '../includes/config.php';
+if (!isAuthenticated()) redirect('/auth/login.php');
 $page_title = "Mi Perfil";
 require_once '../includes/header.php';
-if (!isAuthenticated()) redirect('/auth/login.php');
 
 $pdo = getDBConnection();
 $stmt = $pdo->prepare("
