@@ -865,15 +865,52 @@ try {
             document.getElementById('modal-actividad').classList.add('hidden');
         }
         
-        // Función para aplicar filtros
+        // --- FILTRO PERSONALIZADO DE ACTIVIDADES ---
+        function filtrarActividades(filters) {
+            // Filtra actividadesData según los filtros recibidos
+            const actividadesFiltradas = actividadesData.filter(function(a) {
+                if (filters.eje && a.eje_nombre !== filters.eje) return false;
+                if (filters.estado && a.estatus !== filters.estado) return false;
+                if (filters.responsable && (a.responsable_nombre + ' ' + a.responsable_apellido) !== filters.responsable) return false;
+                if (filters.fecha_inicio && new Date(a.fecha_inicio) < new Date(filters.fecha_inicio)) return false;
+                if (filters.fecha_fin && new Date(a.fecha_fin) > new Date(filters.fecha_fin)) return false;
+                return true;
+            });
+            // Recarga el Gantt solo con las actividades filtradas
+            gantt.clearAll();
+            gantt.parse({
+                data: actividadesFiltradas.map(actividad => ({
+                    id: actividad.id,
+                    text: actividad.nombre,
+                    start_date: actividad.fecha_inicio ? new Date(actividad.fecha_inicio) : new Date(),
+                    end_date: actividad.fecha_fin ? new Date(actividad.fecha_fin) : new Date(),
+                    responsable: actividad.responsable_nombre ? actividad.responsable_nombre + ' ' + actividad.responsable_apellido : 'No asignado',
+                    estado: actividad.estatus,
+                    lugar: actividad.lugar || 'No especificado',
+                    tipo: actividad.tipo_actividad || 'No especificado',
+                    progress: 0,
+                    descripcion: actividad.descripcion,
+                    eje: actividad.eje_nombre,
+                    componente: actividad.componente_nombre,
+                    producto: actividad.producto_nombre,
+                    meta: actividad.meta,
+                    observaciones: actividad.observaciones,
+                    organizacion: actividad.organizacion_nombre,
+                    estado_actividad: actividad.estado_actividad,
+                    tipo_poblacion: actividad.tipo_poblacion,
+                    poligono: actividad.poligono_nombre
+                }))
+            });
+        }
+        
+        // Modifico aplicarFiltros para usar filtrarActividades
         function aplicarFiltros() {
             const eje = document.getElementById('filtro-eje').value;
             const estado = document.getElementById('filtro-estado').value;
             const responsable = document.getElementById('filtro-responsable').value;
             const fechaInicio = document.getElementById('fecha-inicio').value;
             const fechaFin = document.getElementById('fecha-fin').value;
-            
-            gantt.filter({
+            filtrarActividades({
                 eje: eje,
                 estado: estado,
                 responsable: responsable,
@@ -882,15 +919,14 @@ try {
             });
         }
         
-        // Función para limpiar filtros
+        // Modifico limpiarFiltros para recargar todas las actividades
         function limpiarFiltros() {
             document.getElementById('filtro-eje').value = '';
             document.getElementById('filtro-estado').value = '';
             document.getElementById('filtro-responsable').value = '';
             document.getElementById('fecha-inicio').value = '';
             document.getElementById('fecha-fin').value = '';
-            
-            gantt.clearFilter();
+            filtrarActividades({});
         }
         
         // Función para filtrar por estado desde las tarjetas de estadísticas
@@ -1230,47 +1266,6 @@ try {
             option.value = responsable;
             option.textContent = responsable;
             filtroResponsable.appendChild(option);
-        });
-        
-        // Configurar filtros personalizados
-        gantt.filter = function(tasks, filters) {
-            return tasks.filter(function(task) {
-                if (filters.eje && task.eje !== filters.eje) return false;
-                if (filters.estado && task.estado !== filters.estado) return false;
-                if (filters.responsable && task.responsable !== filters.responsable) return false;
-                if (filters.fecha_inicio && task.start_date < new Date(filters.fecha_inicio)) return false;
-                if (filters.fecha_fin && task.end_date > new Date(filters.fecha_fin)) return false;
-                return true;
-            });
-        };
-        
-        // Cerrar modal al hacer clic fuera
-        document.getElementById('modal-actividad').addEventListener('click', function(e) {
-            if (e.target === this) {
-                cerrarModal();
-            }
-        });
-        
-        // Configurar controles de zoom
-        document.addEventListener('DOMContentLoaded', function() {
-            // Agregar controles de zoom al header
-            const headerControls = document.querySelector('.flex.flex-wrap.gap-2');
-            if (headerControls) {
-                const zoomControls = document.createElement('div');
-                zoomControls.className = 'flex gap-2 ml-4';
-                zoomControls.innerHTML = `
-                    <button onclick="zoomOut()" class="bg-cadet text-white px-3 py-2 rounded-lg hover:bg-cadet/90 transition-colors" title="Alejar">
-                        <i class="fas fa-search-minus"></i>
-                    </button>
-                    <button onclick="zoomToFit()" class="bg-cadet text-white px-3 py-2 rounded-lg hover:bg-cadet/90 transition-colors" title="Ajustar">
-                        <i class="fas fa-expand-arrows-alt"></i>
-                    </button>
-                    <button onclick="zoomIn()" class="bg-cadet text-white px-3 py-2 rounded-lg hover:bg-cadet/90 transition-colors" title="Acercar">
-                        <i class="fas fa-search-plus"></i>
-                    </button>
-                `;
-                headerControls.appendChild(zoomControls);
-            }
         });
     </script>
 </body>
