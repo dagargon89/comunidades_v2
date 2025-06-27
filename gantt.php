@@ -1407,6 +1407,38 @@ try {
             option.textContent = responsable;
             filtroResponsable.appendChild(option);
         });
+
+        // Función para imprimir el diagrama de Gantt
+        function imprimirGantt() {
+            try {
+                const ganttContainer = document.getElementById('gantt_container');
+                const ventanaImpresion = window.open('', '_blank');
+                ventanaImpresion.document.write(`
+                    <html>
+                    <head>
+                        <title>Imprimir Diagrama de Gantt</title>
+                        <link rel="stylesheet" href="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.css">
+                        <style>
+                            body { font-family: Arial, sans-serif; margin: 20px; }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>Diagrama de Gantt</h1>
+                        <div>${ganttContainer.innerHTML}</div>
+                    </body>
+                    </html>
+                `);
+                ventanaImpresion.document.close();
+                ventanaImpresion.onload = function() {
+                    ventanaImpresion.print();
+                    ventanaImpresion.close();
+                };
+                mostrarNotificacion('Preparando impresión...', 'success');
+            } catch (error) {
+                console.error('Error al imprimir:', error);
+                mostrarNotificacion('Error al imprimir el Gantt', 'error');
+            }
+        }
     </script>
 </body>
 
