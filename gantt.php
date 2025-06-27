@@ -616,31 +616,23 @@ try {
         gantt.config.work_time = true;
         gantt.config.correct_work_time = true;
 
-        // Configuración de columnas
+        // --- COLUMNAS PERSONALIZADAS DEL GANTT ---
         gantt.config.columns = [{
                 name: "text",
                 label: "Actividad",
-                width: 200,
+                width: 250,
                 tree: true,
-                editor: {
-                    type: "text",
-                    map_to: "text"
-                }
-            },
-            {
-                name: "responsable",
-                label: "Responsable",
-                width: 120,
-                editor: {
-                    type: "select",
-                    map_to: "responsable",
-                    options: []
+                template: function(obj) {
+                    // Flecha acordeón
+                    const isOpen = (window.filaExpandidaId && window.filaExpandidaId == obj.id);
+                    const flecha = isOpen ? '▼' : '▶';
+                    return `<span class='gantt-acordeon-flecha' data-id='${obj.id}' style='cursor:pointer; margin-right:8px;'>${flecha}</span>${obj.text}`;
                 }
             },
             {
                 name: "estado",
                 label: "Estado",
-                width: 100,
+                width: 120,
                 template: function(obj) {
                     const estados = {
                         'Programada': '<span class="px-2 py-1 text-xs text-blue-800 bg-blue-100 rounded-full">Programada</span>',
@@ -649,62 +641,71 @@ try {
                         'Cancelada': '<span class="px-2 py-1 text-xs text-red-800 bg-red-100 rounded-full">Cancelada</span>'
                     };
                     return estados[obj.estado] || obj.estado;
-                },
-                editor: {
-                    type: "select",
-                    map_to: "estado",
-                    options: [{
-                            key: "Programada",
-                            label: "Programada"
-                        },
-                        {
-                            key: "En Progreso",
-                            label: "En Progreso"
-                        },
-                        {
-                            key: "Completada",
-                            label: "Completada"
-                        },
-                        {
-                            key: "Cancelada",
-                            label: "Cancelada"
-                        }
-                    ]
-                }
-            },
-            {
-                name: "lugar",
-                label: "Lugar",
-                width: 150,
-                editor: {
-                    type: "text",
-                    map_to: "lugar"
-                }
-            },
-            {
-                name: "tipo",
-                label: "Tipo",
-                width: 100,
-                editor: {
-                    type: "text",
-                    map_to: "tipo"
-                }
-            },
-            {
-                name: "progress",
-                label: "Progreso",
-                width: 80,
-                template: function(obj) {
-                    return Math.round(obj.progress || 0) + "%";
-                },
-                editor: {
-                    type: "number",
-                    map_to: "progress",
-                    min: 0,
-                    max: 100
                 }
             }
         ];
+
+        // --- ACORDEÓN DETALLES ---
+        window.filaExpandidaId = null;
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('gantt-acordeon-flecha')) {
+                const id = e.target.getAttribute('data-id');
+                toggleAcordeonGantt(id);
+            }
+        });
+        // También permitir clic en el nombre de la actividad
+        gantt.attachEvent("onTaskClick", function(id, e) {
+            if (e.target.classList.contains('gantt-acordeon-flecha')) return false;
+            toggleAcordeonGantt(id);
+            return false;
+        });
+
+        function toggleAcordeonGantt(id) {
+            // Cerrar fila anterior si existe y es diferente
+            if (window.filaExpandidaId && window.filaExpandidaId !== id) {
+                const rowAnterior = document.querySelector(`.gantt_row[data-task-id='${window.filaExpandidaId}'] + .gantt_detalle_row`);
+                if (rowAnterior) rowAnterior.remove();
+                window.filaExpandidaId = null;
+                // Restaurar flecha
+                const flechaAnt = document.querySelector(`.gantt-acordeon-flecha[data-id='${window.filaExpandidaId}']`);
+                if (flechaAnt) flechaAnt.textContent = '▶';
+            }
+            // Si ya está expandida, la cerramos
+            const rowExistente = document.querySelector(`.gantt_row[data-task-id='${id}'] + .gantt_detalle_row`);
+            if (rowExistente) {
+                rowExistente.remove();
+                window.filaExpandidaId = null;
+                // Cambiar flecha
+                const flecha = document.querySelector(`.gantt-acordeon-flecha[data-id='${id}']`);
+                if (flecha) flecha.textContent = '▶';
+                return;
+            }
+            // Obtenemos datos de la actividad
+            const task = gantt.getTask(id);
+            const actividad = actividadesData.find(a => a.id == id);
+            // Creamos la fila de detalles
+            const row = document.querySelector(`.gantt_row[data-task-id='${id}']`);
+            if (row) {
+                const detalleRow = document.createElement('div');
+                detalleRow.className = 'gantt_detalle_row';
+                detalleRow.style.background = '#f8f9fa';
+                detalleRow.style.borderLeft = '4px solid #20A39E';
+                detalleRow.style.padding = '16px';
+                detalleRow.style.gridColumn = '1/-1';
+                detalleRow.innerHTML = `
+                    <div style="display: flex; flex-wrap: wrap; gap: 24px;">
+                        <div><b>Responsable:</b> ${actividad.responsable_nombre ? actividad.responsable_nombre + ' ' + actividad.responsable_apellido : 'No asignado'}</div>
+                        <div><b>Lugar:</b> ${actividad.lugar || 'No especificado'}</div>
+                        <div><b>Tipo:</b> ${actividad.tipo_actividad || 'No especificado'}</div>
+                    </div>
+                `;
+                row.parentNode.insertBefore(detalleRow, row.nextSibling);
+                window.filaExpandidaId = id;
+                // Cambiar flecha
+                const flecha = document.querySelector(`.gantt-acordeon-flecha[data-id='${id}']`);
+                if (flecha) flecha.textContent = '▼';
+            }
+        }
 
         // Configuración de enlaces
         gantt.config.links = {
